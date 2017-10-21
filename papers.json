@@ -1,0 +1,42 @@
+[
+  {
+    "citationCount":108,
+    "venue":"arxiv",
+    "year":2001,
+    "id":"00c6350e04e76a3cc41d55396f0081933be9a3f7",
+    "title":"a kernel method for canonical correlation analysis",
+    "authors":"shotaro akaho"
+  },
+  {
+    "citationCount":98,
+    "venue":"arxiv",
+    "year":1997,
+    "id":"142c91a92aa7c723a4399beca76d5c0bfe68c5f8",
+    "title":"distinguishing word senses in untagged text",
+    "authors":"ted pedersen, rebecca f. bruce"
+  },
+  {
+    "citationCount":69,
+    "venue":"arxiv",
+    "year":2002,
+    "id":"30a50612f904b6461d1cd08e8db4e97c9382afad",
+    "title":"classification of random boolean networks",
+    "authors":"carlos gershenson"
+  },
+  {
+    "citationCount":49,
+    "venue":"arxiv",
+    "year":2008,
+    "id":"77cd3c9586de02c9547d659267f968c41c3bcfab",
+    "title":"transmission techniques for relay-interference networks",
+    "authors":"soheil mohajer, christina fragouli, david tse, suhas n. diggavi"
+  },
+  {
+    "citationCount":47,
+    "venue":"arxiv",
+    "year":2012,
+    "id":"2087051f7270a9e4c2fad061c05768399374a969",
+    "title":"a stochastic gradient method with an exponential convergence rate for strongly-convex optimization with finite training sets",
+    "authors":"francis r. bach, mark w. schmidt, nicolas le roux"
+  }
+]

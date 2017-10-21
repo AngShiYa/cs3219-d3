@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Top 10 Authors</title>
+    <style>
+	    body {
+	    	font-family: helvetica;
+	    }
+
+	    #charttitle {
+	    	text-align: center;
+            color: #2d2d2d;
+	    }
+
+	    .axis {
+	    	font-size: 13px;
+	    }
+
+	    .axis path, .axis line {
+	    	fill: none;
+	    	stroke: #333333;
+	    	stroke-width: 1px;
+	    	shape-rendering: crispEdges;
+	    }
+
+	    .grid .tick {
+	    	stroke: #9c9c9c;
+	    	stroke-opacity: 0.4;
+	    	shape-rendering: crispEdges;
+	    }
+
+	    .bar {
+	    	fill: #99aab5;
+	    }
+
+        .bar:hover {
+            fill: #fa8080;
+        }
+
+	    .label {
+	    	fill: #2d2d2d;
+	    	font-size: 13px;
+	    }
+
+        .d3-tip {
+            line-height: 1;
+            font: 14px sans-serif;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: rgb(185, 185, 185);
+            border-radius: 2px;
+        }
+
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.8);
+            content: "\25BC";
+            position: absolute;
+            text-align: center;
+        }
+
+        .d3-tip.n:after {
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+        }
+    </style>
+  </head>
+  <body>
+  	<div id="chartarea">
+	  	<div id="charttitle">
+	  		<h2>Top 10 authors for venue arXiv</h2>
+	  	</div>
+	    <div id="barchart"></div>
+	</div>
+    <script src="d3.v3.min.js"></script>
+    <script src="d3.tip.v0.6.3.js"></script>
+    <script>
+    var margin = {top: 15, right: 25, bottom: 60, left: 180},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+    var chart = d3.select("#barchart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+            return "<div><span>Name:</span> <span style='color:white'>" + d.name + "</span></div>" +
+            "<div><span>Total Publications:</span> <span style='color:white'>" + d.paperCount + "</span></div>";
+    })
+
+    chart.call(tip);
+
+    d3.json("authors.json", function(data) {
+    	data = data.sort(function(x, y) { 
+            return d3.ascending(x.paperCount, y.paperCount) || 
+            d3.descending(x.name, y.name); })    
+
+    	var x = d3.scale.linear()
+    		.range([0, width])
+    		.domain([0, d3.max(data, function(d) { return d.paperCount; })]);
+
+    	var y = d3.scale.ordinal()
+    		.rangeRoundBands([height, 0], .1)
+    		.domain(data.map(function(d) { return d.name; }));
+
+    	var xAxis = d3.svg.axis()
+    		.ticks(d3.max(data, function(d) { return d.paperCount; }))
+    		.tickFormat(d3.format(".0f"))
+    		.scale(x)
+    		.orient("bottom");
+
+    	var yAxis = d3.svg.axis()
+    		.scale(y)
+    		.tickSize(0)
+    		.orient("left");
+
+    	// Add x axis
+    	chart.append("g")
+    		.attr("class", "x axis")
+    		.attr("transform", "translate(0, " + height + ")")
+    		.call(xAxis);
+
+    	// Add x axis label
+    	chart.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width/2 + ", " + (height + 50) + ")")
+            .attr("class", "label")
+            .text("Number of Publications");
+
+    	// Add x axis grid lines
+    	chart.append("g")
+    		.attr("class", "grid")
+    		.attr("transform", "translate(0, " + height + ")")
+    		.call(xAxis.tickSize(-height, 0, 0).tickFormat(""));
+
+        // Add bars
+    	var bar = chart.selectAll(".bar")
+    		.data(data)
+    		.enter()
+    		.append("g")
+
+	    bar.append("rect")
+	    	.attr("class", "bar")
+	    	.attr("x", 0)
+	    	.attr("width", function(d) { return x(d.paperCount); })
+	    	.attr("y", function(d) { return y(d.name); })
+	    	.attr("height", y.rangeBand())
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide);
+
+        // Add y axis
+        chart.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text");
+    });
+
+    </script>
+  </body>
+</html>

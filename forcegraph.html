@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Citation Network</title>
+    <style>
+    	body {
+	    	font-family: helvetica;
+	    }
+
+	    #charttitle {
+	    	text-align: center;
+	    }
+    	.node {
+  			stroke: #fff;
+  			stroke-width: 1.5px;
+		}
+
+		.link {
+  			fill: none;
+  			stroke: #bbb;
+		}
+    </style>
+    </head>
+  	<body>
+  	<div id="chartarea">
+	  	<div id="charttitle">
+	  		<h2>Citation Network</h2>
+	  	</div>
+	    <div id="forcegraph"></div>
+	</div>
+    <script src="d3.v4.min.js"></script>
+    <script>
+    var width = 960, height = 600, radius = 5;
+    
+    var svg = d3.select("#forcegraph").append("svg")
+    	.attr("width", width)
+	    .attr("height", height);
+
+	var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+	var simulation = d3.forceSimulation()
+	    .force("link", d3.forceLink().distance(10).strength(0.5))
+	    .force("charge", d3.forceManyBody())
+	    .force("center", d3.forceCenter(width / 2, height / 2));
+
+	d3.json("level4.json", function(error, graph) {
+	 	if (error) throw error;
+
+	 	var nodes = graph.nodes,
+	    	nodeById = d3.map(nodes, function(d) { return d.id; }),
+	    	links = graph.links,
+	    	bilinks = [];
+
+	  	links.forEach(function(link) {
+	    	var s = link.source = nodeById.get(link.source),
+	        	t = link.target = nodeById.get(link.target),
+	        	i = {}; // intermediate node
+	    	nodes.push(i);
+	    	links.push({source: s, target: i}, {source: i, target: t});
+	    	bilinks.push([s, i, t]);
+	  	});
+
+	  	simulation
+	      	.nodes(nodes)
+	      	.on("tick", ticked);
+
+	  	simulation.force("link")
+	      	.links(links);
+
+	  	function ticked() {
+	    	link.attr("d", positionLink);
+	    	node.attr("transform", positionNode);
+	  	}
+
+	  	//add encompassing group for the zoom 
+		var g = svg.append("g")
+    		.attr("class", "everything");
+
+	  	var link = g.selectAll(".link")
+	    	.data(bilinks)
+	    	.enter().append("path")
+	      	.attr("class", "link");
+
+	  	var node = g.selectAll(".node")
+	    	.data(nodes.filter(function(d) { return d.id; }))
+	    	.enter().append("circle")
+	      	.attr("class", "node")
+	      	.attr("r", radius)
+	      	.attr("fill", function(d) { return color(d.group); })
+	      	.call(d3.drag()
+	          	.on("start", dragstarted)
+	          	.on("drag", dragged)
+	          	.on("end", dragended));
+
+	  	node.append("title")
+	      	.text(function(d) { return d.title; });
+
+	    var legend = svg.selectAll(".legend")
+    		.data(color.domain())
+    		.enter().append("g")
+    		.attr("class", "legend")
+    		.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+		legend.append("rect")
+		    .attr("x", width - 18)
+	    	.attr("width", 18)
+	    	.attr("height", 18)
+	    	.style("fill", color);
+
+		legend.append("text")
+	    	.attr("x", width - 24)
+	    	.attr("y", 9)
+	    	.attr("dy", ".35em")
+	    	.style("text-anchor", "end")
+	    	.text(function(d) { return "level " + d; });
+
+	  	//add zoom capabilities 
+		var zoom_handler = d3.zoom()
+    		.on("zoom", zoom_actions);
+
+		zoom_handler(svg);
+
+		//Zoom functions 
+		function zoom_actions(){
+    		g.attr("transform", d3.event.transform)
+		}
+	});
+
+	function positionLink(d) {
+	  	return "M" + d[0].x + "," + d[0].y
+	    	+ "S" + d[1].x + "," + d[1].y
+	       	+ " " + d[2].x + "," + d[2].y;
+	}
+
+	function positionNode(d) {
+	  	return "translate(" + 
+	  		Math.max(radius, Math.min(width - radius, d.x)) + "," + 
+	  		Math.max(radius, Math.min(height - radius, d.y)) + ")";
+	}
+
+	function dragstarted(d) {
+	  	if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+	  	d.fx = d.x, d.fy = d.y;
+	}
+
+	function dragged(d) {
+	  	d.fx = d3.event.x, d.fy = d3.event.y;
+	}
+
+	function dragended(d) {
+	  	if (!d3.event.active) simulation.alphaTarget(0);
+	  	d.fx = null, d.fy = null;
+	}
+    </script>
+  </body>
+</html>
