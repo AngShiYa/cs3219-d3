@@ -1,174 +1,152 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-body {
-  font-family: helvetica;
-}
+<html>
+    <head>
+    <meta charset="utf-8">
+    <title>Publication Trend for Venue ICSE"</title>
+    <style>
+        body {
+            font-family: helvetica;
+        }
 
-#charttitle {
-  text-align: center;
-}
+        #dotplot {
+            width: 960px;
+            margin: auto;
+        }
 
-.enter {
-  fill: #EDCA3A;
-}
+        .enter {
+            fill: #EDCA3A;
+        }
 
-.update {
-  fill: #1FBAD6;
-}
+        .enter:hover {
+            fill: #E6B0F1;
+        }
 
-.exit {
-  fill: #F25754;
-}
+        .d3-tip {
+            line-height: 1;
+            font: 14px sans-serif;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: rgb(185, 185, 185);
+            border-radius: 2px;
+        }
 
-.selected {
-  fill: #E6B0F1;
-}
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.8);
+            content: "\25BC";
+            position: absolute;
+            text-align: center;
+        }
 
-div.tooltip {
-  color: black;
-  position: absolute;
-  text-align: left;
-  width: auto;
-  height: auto;
-  padding: 5px;
-  font-family: Futura;
-  font: 12px sans-serif ;
-  background: #FCB8C3FF;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-}
+        .d3-tip.n:after {
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+        }
+    </style>
+    <body>
+    <div id="dotplot"></div>
+    <script src="d3.v4.min.js"></script>
+    <script src="d3.tip.js"></script>
+    <script>
+        var margin = {top: 30, right: 30, bottom: 30, left: 30},
+            width = 960 - margin.left - margin.right,
+            height = 550 - margin.top - margin.bottom;
 
-</style>
+        var svg = d3.select("#dotplot")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
+        // Add chart title
+        svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width/2 + ", " + (0 - (margin.top/2) + 50) + ")")
+            .attr("class", "charttitle")
+            .style("font-size", "26px")
+            .style("font-weight", "bold")
+            .text("Publication Trend for Venue ICSE");
 
-<body>
-  <div id="chartarea">
-      <div id="charttitle">
-        <h2>Publication trend for venue ICSE</h2>
-      </div>
-      <div id="barchart"></div>
-  </div>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
+        var tip = d3.tip()
+            .attr("class", "d3-tip")
+            .offset([-10, 0])
+        .html(function(d) {
+            return "<div><span>Height:</span> <span style='color:white'>" + (d.idx+1) + "</span></div>" + "<div><span>Title:</span> <span style='color:white'>" + d.title + "</span></div>" + "<div><span>Author:</span> <span style='color:white'>" + d.authors + "</span></div>" + "<div><span>Year:</span> <span style='color:white'>" + d.year + "</span></div>";
+        })
 
-//SVG setup
-var margin = {top: 15, right: 25, bottom: 80, left: 60},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        svg.call(tip);
 
-//set up svg
-const svg = d3.select("#barchart")
-  .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform",
-            `translate(${margin.left}, ${margin.top})`);
+        // Get the data
+        d3.json("query2.json", function(data) {
+            var min = d3.min(data, function(d) { return d.year; })
+            var max = d3.max(data, function(d) { return d.year; })
 
-//tooltip
-const tooltip = d3.select("#barchart")
-  .append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
+            // x scales
+            var x = d3.scaleLinear()
+                .range([0, width])
+                .domain([min-1, max+1]);
 
-// Get the data
-d3.json("query2.json", function(data) {
-  var min = d3.min(data, function(d) { return d.year; })
-  var max = d3.max(data, function(d) { return d.year; })
+            var xAxis = d3
+                .axisBottom(x)
+                .ticks(20)
+                .tickFormat(d3.format(".0f"));
 
-  //x scales
-  var x = d3.scaleLinear()
-    .range([0, width])
-    .domain([min-1, max+1]);
+            // Add x axis
+            svg.append("g")
+                .attr("class", "axis axis--x")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
 
-  var xAxis = d3
-    .axisBottom(x)
-    .ticks(20)
-    .tickFormat(d3.format(".0f"));
+            // Number of bins for histogram
+            var nbins = max - min;
 
-  // add x axis
-  svg.append("g")
-    .attr("class", "axis axis--x")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+            // Histogram binning
+            var histogram = d3.histogram()
+                .domain(x.domain())
+                .thresholds(x.ticks(nbins))
+                .value(function(d) { return d.year; })
 
-  //number of bins for histogram
-  const nbins = max - min;
+            // Binning data and filtering out empty bins
+            var bins = histogram(data).filter(d => d.length>0)
 
-  //histogram binning
-  const histogram = d3.histogram()
-    .domain(x.domain())
-    .thresholds(x.ticks(nbins))
-    .value(function(d) { return d.year;} )
+            // g container for each bin
+            let binContainer = svg.selectAll(".gBin").data(bins);
 
-    //binning data and filtering out empty bins
-    const bins = histogram(data).filter(d => d.length>0)
+            let binContainerEnter = binContainer.enter()
+                .append("g")
+                .attr("class", "gBin")
+                .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
 
-    //g container for each bin
-    let binContainer = svg.selectAll(".gBin")
-      .data(bins);
-
-    let binContainerEnter = binContainer.enter()
-      .append("g")
-        .attr("class", "gBin")
-        .attr("transform", d => `translate(${x(d.x0)}, ${height})`)
-
-    //need to populate the bin containers with data the first time
-    binContainerEnter.selectAll("circle")
-        .data(d => d.map((p, i) => {
-          return {idx: i,
-                  title: p.title,
-                  year: p.year,
-                  authors: p.authors,
-                  radius: (x(d.x1)-x(d.x0))/3
-                }
-        }))
-      .enter()
-      .append("circle")
-        .attr("class", "enter")
-        .attr("cx", 0) //g element already at correct x pos
-        .attr("cy", function(d) {
-            return - d.idx * 2 * d.radius - d.radius; })
-        .attr("r", 0)
-        .on("mouseover", tooltipOn)
-        .on("mouseout", tooltipOff)
-        .transition()
-          .duration(500)
-          .attr("r", function(d) {
-          return (d.length==0) ? 0 : d.radius; })
-  });//d3.csv
-
-function tooltipOn(d) {
-  //x position of parent g element
-  let gParent = d3.select(this.parentElement)
-  let translateValue = gParent.attr("transform")
-
-  let gX = translateValue.split(",")[0].split("(")[1]
-  let gY = height + (+d3.select(this).attr("cy"))
-
-  d3.select(this)
-    .classed("selected", true)
-  tooltip.transition()
-       .duration(200)
-       .style("opacity", .9);
-  tooltip.html(d.title + "<br/>Year: " + d.year + "<br/>Authors: " + d.authors)
-    .style("left", gX + "px")
-    .style("top", gY + "px")
-    .style("background", "white")
-}//tooltipOn
-
-function tooltipOff(d) {
-  d3.select(this)
-      .classed("selected", false);
-    tooltip.transition()
-         .duration(500)
-         .style("opacity", 0);
-}//tooltipOff
-
-</script>
-
-
-</body>
+            // need to populate the bin containers with data the first time
+            binContainerEnter.selectAll("circle")
+                .data(d => d.map((p, i) => {
+                    return { 
+                        idx: i,
+                        title: p.title,
+                        year: p.year,
+                        authors: p.authors,
+                        radius: (x(d.x1)-x(d.x0))/3
+                    }
+                }))
+                .enter()
+                .append("circle")
+                .attr("class", "enter")
+                .attr("cx", 0)
+                .attr("cy", function(d) { return - d.idx * 2 * d.radius - d.radius; })
+                .attr("r", 0)
+                .on("mouseover", tip.show)
+                .on("mouseout", tip.hide)
+                .transition()
+                .duration(500)
+                .attr("r", function(d) { return (d.length==0) ? 0 : d.radius; })
+        });
+    </script>
+    </body>
 </html>

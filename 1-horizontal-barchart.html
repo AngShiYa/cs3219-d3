@@ -2,16 +2,16 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Top 10 Authors</title>
+    <title>Top 10 Authors for venue arXiv</title>
     <style>
 	    body {
 	    	font-family: helvetica;
 	    }
 
-	    #charttitle {
-	    	text-align: center;
-            color: #2d2d2d;
-	    }
+        #barchart {
+            width: 960px;
+            margin: auto;
+        }
 
 	    .axis {
 	    	font-size: 13px;
@@ -73,18 +73,13 @@
     </style>
   </head>
   <body>
-  	<div id="chartarea">
-	  	<div id="charttitle">
-	  		<h2>Top 10 authors for venue arXiv</h2>
-	  	</div>
-	    <div id="barchart"></div>
-	</div>
+	<div id="barchart"></div>
     <script src="d3.v3.min.js"></script>
-    <script src="d3.tip.v0.6.3.js"></script>
+    <script src="d3.tip.js"></script>
     <script>
-    var margin = {top: 15, right: 25, bottom: 60, left: 180},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+    var margin = {top: 80, right: 25, bottom: 60, left: 150},
+        width = 960 - margin.left - margin.right,
+        height = 550 - margin.top - margin.bottom;
 
     var chart = d3.select("#barchart")
         .append("svg")
@@ -97,8 +92,7 @@
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function(d) {
-            return "<div><span>Name:</span> <span style='color:white'>" + d.name + "</span></div>" +
-            "<div><span>Total Publications:</span> <span style='color:white'>" + d.paperCount + "</span></div>";
+            return "<div><span>Name:</span> <span style='color:white'>" + d.name + "</span></div>" + "<div><span>Total Publications:</span> <span style='color:white'>" + d.paperCount + "</span></div>";
     })
 
     chart.call(tip);
@@ -158,14 +152,23 @@
 	    	.attr("width", function(d) { return x(d.paperCount); })
 	    	.attr("y", function(d) { return y(d.name); })
 	    	.attr("height", y.rangeBand())
-            .on('mouseover', tip.show)
-            .on('mouseout', tip.hide);
+            .on("mouseover", tip.show)
+            .on("mouseout", tip.hide);
 
         // Add y axis
         chart.append("g")
             .attr("class", "y axis")
             .call(yAxis)
             .append("text");
+
+        // Add chart title
+        chart.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width/2 + ", " + (0 - (margin.top/2) + 10) + ")")
+            .attr("class", "charttitle")
+            .style("font-size", "26px")
+            .style("font-weight", "bold")
+            .text("Top 10 authors for venue arXiv");
     });
 
     </script>
