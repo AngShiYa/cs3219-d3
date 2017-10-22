@@ -21,6 +21,10 @@
             fill: #E6B0F1;
         }
 
+        .axis {
+            font-size: 12px;
+        }
+
         .d3-tip {
             line-height: 1;
             font: 14px sans-serif;
@@ -78,7 +82,7 @@
             .attr("class", "d3-tip")
             .offset([-10, 0])
         .html(function(d) {
-            return "<div><span>Height:</span> <span style='color:white'>" + (d.idx+1) + "</span></div>" + "<div><span>Title:</span> <span style='color:white'>" + d.title + "</span></div>" + "<div><span>Author:</span> <span style='color:white'>" + d.authors + "</span></div>" + "<div><span>Year:</span> <span style='color:white'>" + d.year + "</span></div>";
+            return "<div><span>Height:</span> <span style='color:white'>" + (d.idx+1) + "</span></div>" + "<div><span>Title:</span> <span style='color:white'>" + d.title + "</span></div>" + "<div><span>Author:</span> <span style='color:white'>" + d.authors + "</span></div>" + "<div><span>Year of Publication:</span> <span style='color:white'>" + d.year + "</span></div>";
         })
 
         svg.call(tip);
