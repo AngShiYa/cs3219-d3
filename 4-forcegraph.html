@@ -84,8 +84,8 @@
 	    <div id="forcegraph"></div>
 	    <div id="legendarea"></div>
 	</div>
-    <script src="d3.v4.min.js"></script>
-    <script src="d3.tip.js"></script>
+    <script src="js/d3.v4.min.js"></script>
+    <script src="js/d3.tip.js"></script>
     <script>
     var width = 960, height = 600, radius = 5;
     
@@ -109,7 +109,7 @@
 	    .force("charge", d3.forceManyBody())
 	    .force("center", d3.forceCenter(width / 2, height / 2));
 
-	d3.json("level4.json", function(error, graph) {
+	d3.json("data/4-Low-density parity check codes over GF(q)-web.json", function(error, graph) {
 	 	if (error) throw error;
 
 	 	var nodes = graph.nodes,

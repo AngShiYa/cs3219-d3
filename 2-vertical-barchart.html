@@ -8,8 +8,9 @@
 	    	font-family: helvetica;
 	    }
 
-	    #charttitle {
-	    	text-align: center;
+	    #barchart {
+	    	width: 960px;
+            margin: auto;
 	    }
 
 	    .axis {
@@ -40,16 +41,11 @@
     </style>
   </head>
   <body>
-  	<div id="chartarea">
-	  	<div id="charttitle">
-	  		<h2>Top 5 papers for venue arXiv</h2>
-	  	</div>
-	    <div id="barchart"></div>
-	</div>
-    <script src="d3.v3.min.js"></script>
+	<div id="barchart"></div>
+    <script src="js/d3.v3.min.js"></script>
     <script>
-    d3.json("papers.json", function(data) {
-	    var margin = {top: 15, right: 25, bottom: 80, left: 60},
+    d3.json("data/2-arxiv-top-papers.json", function(data) {
+	    var margin = {top: 80, right: 25, bottom: 80, left: 60},
 	    	width = 960 - margin.left - margin.right,
 	    	height = 500 - margin.top - margin.bottom;
 
@@ -64,9 +60,10 @@
     		.rangeRoundBands([0, width], 0.1)
     		.domain(data.map(function(d) { return d.title; }));
 
+        var maxHeight = Math.ceil(d3.max(data, function(d) { return d.citationCount; }) / 10) * 10;
         var y = d3.scale.linear()
             .range([height, 0])
-            .domain([0, d3.max(data, function(d) { return ((d.citationCount/10) + 1) * 10; })]);
+            .domain([0, maxHeight]);
 
     	var xAxis = d3.svg.axis()
     		.scale(x)
@@ -75,6 +72,15 @@
         var yAxis = d3.svg.axis()
             .scale(y)
             .orient("left");
+
+        // Add chart title
+        chart.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width/2 + ", " + (0 - (margin.top/2) + 10) + ")")
+            .attr("class", "charttitle")
+            .style("font-size", "26px")
+            .style("font-weight", "bold")
+            .text("Top 5 papers for venue arXiv");
 
     	// Add x axis
     	chart.append("g")

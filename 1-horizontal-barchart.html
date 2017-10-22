@@ -74,8 +74,8 @@
   </head>
   <body>
 	<div id="barchart"></div>
-    <script src="d3.v3.min.js"></script>
-    <script src="d3.tip.js"></script>
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/d3.tip.js"></script>
     <script>
     var margin = {top: 80, right: 25, bottom: 60, left: 150},
         width = 960 - margin.left - margin.right,
@@ -97,7 +97,7 @@
 
     chart.call(tip);
 
-    d3.json("authors.json", function(data) {
+    d3.json("data/1-arxiv-top-authors.json", function(data) {
     	data = data.sort(function(x, y) { 
             return d3.ascending(x.paperCount, y.paperCount) || 
             d3.descending(x.name, y.name); })    

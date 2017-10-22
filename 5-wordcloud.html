@@ -1,7 +1,5 @@
 <html>
   <head>
-    <script src="d3.v3.min.js"></script>
-    <script src="cloud.js"></script>
     <style>
       #cloud {
         width: 960px;
@@ -11,11 +9,13 @@
   </head>
   <body>
     <div id="cloud"></div>
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/cloud.js"></script>
     <script>
       var width = 960;
       var height = 550;
       var fill = d3.scale.category20();
-      d3.json("word.json", function(data) {
+      d3.json("data/5-title-word-cloud.json", function(data) {
         d3.layout.cloud()
           .size([width, height])
           .words(data)
