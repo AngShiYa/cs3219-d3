@@ -11,15 +11,56 @@
 	    #charttitle {
 	    	text-align: center;
 	    }
+
+	    #forcegraph {
+            width: 960px;
+            margin: auto;
+        }
+
     	.node {
   			stroke: #fff;
   			stroke-width: 1.5px;
+		}
+
+		.node:hover {
+  			stroke-width: 3px;
+  			r: 10px;
+  			-webkit-transition: r 0.5s; /* Safari */
+    		transition: r 0.5s;
 		}
 
 		.link {
   			fill: none;
   			stroke: #bbb;
 		}
+
+		.d3-tip {
+            line-height: 1;
+            font: 14px sans-serif;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: rgb(185, 185, 185);
+            border-radius: 2px;
+        }
+
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.8);
+            content: "\25BC";
+            position: absolute;
+            text-align: center;
+        }
+
+        .d3-tip.n:after {
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+        }
     </style>
     </head>
   	<body>
@@ -30,12 +71,22 @@
 	    <div id="forcegraph"></div>
 	</div>
     <script src="d3.v4.min.js"></script>
+    <script src="d3.tip.js"></script>
     <script>
-    var width = 960, height = 600, radius = 5;
+    var width = 960, height = 650, radius = 5;
     
     var svg = d3.select("#forcegraph").append("svg")
     	.attr("width", width)
 	    .attr("height", height);
+
+	var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+            return "<div><span>Title:</span> <span style='color:white'>" + d.title + "</span></div>" + "<div><span>Year:</span> <span style='color:white'>" + d.year + "</span></div>" + "<div><span>Level:</span> <span style='color:white'>" + d.group + "</span></div>";
+    })
+
+    svg.call(tip);
 
 	var color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -88,13 +139,12 @@
 	      	.attr("class", "node")
 	      	.attr("r", radius)
 	      	.attr("fill", function(d) { return color(d.group); })
+	      	.on("mouseover", tip.show)
+            .on("mouseout", tip.hide)
 	      	.call(d3.drag()
 	          	.on("start", dragstarted)
 	          	.on("drag", dragged)
 	          	.on("end", dragended));
-
-	  	node.append("title")
-	      	.text(function(d) { return d.title; });
 
 	    var legend = svg.selectAll(".legend")
     		.data(color.domain())
@@ -103,13 +153,13 @@
     		.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
 		legend.append("rect")
-		    .attr("x", width - 18)
+		    .attr("x", width - 100)
 	    	.attr("width", 18)
 	    	.attr("height", 18)
 	    	.style("fill", color);
 
 		legend.append("text")
-	    	.attr("x", width - 24)
+	    	.attr("x", width - 30)
 	    	.attr("y", 9)
 	    	.attr("dy", ".35em")
 	    	.style("text-anchor", "end")
