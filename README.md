@@ -20,7 +20,7 @@ Name | Matriculation Number | Feature Implemented
 ----|----|----|
 Ang Shi Ya | A0138601M | d3
 Ian Teo | A0139930B | Query & d3
-Yong Zhi Yuan | | Model & Tests
+Yong Zhi Yuan | A0139655U | Model & Tests
 
 ## 1. Introduction
 
