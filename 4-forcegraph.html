@@ -15,6 +15,18 @@
 	    #forcegraph {
             width: 960px;
             margin: auto;
+            border: solid 1px;
+            border-color: #a5a5a5;
+        }
+
+        #legendarea {
+            width: 960px;
+            margin: auto;
+        }
+
+        .legend text {
+        	font-size: 13px;
+        	fill: #3c3c3c;
         }
 
     	.node {
@@ -23,10 +35,11 @@
 		}
 
 		.node:hover {
-  			stroke-width: 3px;
-  			r: 10px;
-  			-webkit-transition: r 0.5s; /* Safari */
-    		transition: r 0.5s;
+			stroke: #ffcc5c;
+  			stroke-width: 2px;
+  			r: 7px;
+  			-webkit-transition: r 0.2s; /* Safari */
+    		transition: r 0.2s;
 		}
 
 		.link {
@@ -69,11 +82,12 @@
 	  		<h2>Citation Network</h2>
 	  	</div>
 	    <div id="forcegraph"></div>
+	    <div id="legendarea"></div>
 	</div>
     <script src="d3.v4.min.js"></script>
     <script src="d3.tip.js"></script>
     <script>
-    var width = 960, height = 650, radius = 5;
+    var width = 960, height = 600, radius = 5;
     
     var svg = d3.select("#forcegraph").append("svg")
     	.attr("width", width)
@@ -83,7 +97,7 @@
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function(d) {
-            return "<div><span>Title:</span> <span style='color:white'>" + d.title + "</span></div>" + "<div><span>Year:</span> <span style='color:white'>" + d.year + "</span></div>" + "<div><span>Level:</span> <span style='color:white'>" + d.group + "</span></div>";
+            return "<div><span>Title:</span> <span style='color:white'>" + d.title + "</span></div>" + "<div><span>Author:</span> <span style='color:white'>" + d.authors + "</span></div>" + "<div><span>Year of publication:</span> <span style='color:white'>" + d.year + "</span></div>";
     })
 
     svg.call(tip);
@@ -146,24 +160,38 @@
 	          	.on("drag", dragged)
 	          	.on("end", dragended));
 
-	    var legend = svg.selectAll(".legend")
+	    var svg2 = d3.select("#legendarea").append("svg")
+    		.attr("width", 960)
+	    	.attr("height", 50);
+
+	    var legend = svg2.selectAll(".legend")
     		.data(color.domain())
     		.enter().append("g")
     		.attr("class", "legend")
-    		.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+    		.attr("transform", function(d, i) { return "translate(" +(i * 150) + ", 0)"; });
 
 		legend.append("rect")
-		    .attr("x", width - 100)
+			.attr("x", 265)
+		    .attr("y", 20)
 	    	.attr("width", 18)
 	    	.attr("height", 18)
 	    	.style("fill", color);
 
+	    legend.append("path")
+	    	.attr("d", "M140 30 l120 0 l0 0 l-10 -5 m10 5 l-10 5")
+	    	.style("fill", "none")
+	    	.style("stroke", function(d) { 
+	    		if (d == 1) return "none"; else return "#a3a3a3"; });
+
 		legend.append("text")
-	    	.attr("x", width - 30)
-	    	.attr("y", 9)
+	    	.attr("x", function(d) { 
+	    		if (d == 1) return 260; else return 225; })
+	    	.attr("y", function(d) { 
+	    		if (d == 1) return 27; else return 15; })
 	    	.attr("dy", ".35em")
 	    	.style("text-anchor", "end")
-	    	.text(function(d) { return "level " + d; });
+	    	.text(function(d) { 
+	    		if (d == 1) return "base paper"; else return "cited by"; });
 
 	  	//add zoom capabilities 
 		var zoom_handler = d3.zoom()
