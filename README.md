@@ -49,7 +49,7 @@ This task is similar to the previous task, except that we want the top 5 papers 
 <em>Figure 3: Trend of publications made for Venue ICSE across all available years</em>
 </p>
 
-We chose to use dot plot to visualize the publication trend as the data was relatively small, and we could visualize every single paper on the chart, while still showing the overall trend using this chart. In addition, this visualization allows us to detect any gaps or anomaly in the data quickly.
+We chose to use dot plot to visualize the publication trend as the data was relatively small, and we could visualize every single paper on the chart, while still showing the overall trend using this chart. In addition, this visualization allows us to detect any gaps or anomaly in the overall trend quickly.
 
 <p align="center">
 <img src="Screenshots/3-dotplot-tooltip.png" width="800"><br>
@@ -89,9 +89,9 @@ It is not possible to show the details of each paper without cluttering the visu
 <em>Figure 7: Word frequency of paper titles</em>
 </p>
 
-We wanted to provide a broader view of the data for this task, as the previous tasks all showed data specific to a certain title or venue. To give a complete view of the dataset we are using, we decided to do a word cloud to show the popular topics amongst the papers in our dataset.
+For this task, we wanted to provide a broader view of the data as all of the previous tasks showed data specific to a certain title or venue. To give a complete view of the dataset we are using, we decided to do a word cloud to show the popular topics amongst the papers in our dataset.
 
-A word cloud enables us to quickly identify words that are repeated many times in the titles of all the papers, showing us the popular topics amongst all the papers.
+A word cloud enables us to quickly identify words that are repeated many times in all of the paper's titles, showing us the popular research topics.
 
 For example, from this visualization, we can see that neurology (**brain, receptor, neurons**) and biology (**cells, gene, disease**) are popular topics to write papers on, in our dataset.
 
