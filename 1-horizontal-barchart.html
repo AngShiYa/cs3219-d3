@@ -97,7 +97,7 @@
         .attr('class', 'd3-tip')
         .offset([-10, 0])
         .html(function(d) {
-            return "<div><span>Name:</span> <span style='color:white'>" + d.name + "</span></div>" + "<div><span>Total Publications:</span> <span style='color:white'>" + d.paperCount + "</span></div>";
+            return "<div><span>Name: </span><span style='color:white'>" + d.name + "</span></div>" + "<div><span>Total Publications: </span><span style='color:white'>" + d.paperCount + "</span></div>";
     })
 
     chart.call(tip);

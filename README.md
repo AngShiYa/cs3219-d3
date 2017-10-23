@@ -68,19 +68,19 @@ Before we can add a SVG, we will first have to declare the dimensions and margin
 
 ```javascript
 var margin = {top: 80, right: 25, bottom: 60, left: 200},
-	width = 960 - margin.left - margin.right,
-	height = 550 - margin.top - margin.bottom;
+    width = 960 - margin.left - margin.right,
+    height = 550 - margin.top - margin.bottom;
 ```
 
 We can now append a SVG using the following code.
 
 ```javascript
 var chart = d3.select("#barchart")
-	.append("svg")
-	.attr("width", width + margin.left + margin.right)
-	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 ```
 
 **4. Set up x and y scales**
@@ -89,7 +89,7 @@ As we will need the chart to scale accordingly to the data, we will first grab t
 
 ```javascript
 d3.json("arxiv-top-authors.json", function(data) {
-	\\ codes
+    \\ codes
 });
 ```	
 
@@ -100,12 +100,12 @@ We can now define the scales inside the call back.
 
 ```javascript
 var x = d3.scale.linear()
-	.range([0, width])
-	.domain([0, d3.max(data, function(d) { return d.paperCount; })]);
+    .range([0, width])
+    .domain([0, d3.max(data, function(d) { return d.paperCount; })]);
 
 var y = d3.scale.ordinal()
-	.rangeRoundBands([height, 0], .1)
-	.domain(data.map(function(d) { return d.name; }));
+    .rangeRoundBands([height, 0], .1)
+    .domain(data.map(function(d) { return d.name; }));
 ```
 
 **5. Define x axis and y axis**
@@ -114,15 +114,15 @@ Using `d3.svg.axis()` we will be able to define the number of ticks, the display
 
 ```javascript
 var xAxis = d3.svg.axis()
-	.ticks(d3.max(data, function(d) { return d.paperCount; }))
-   	.tickFormat(d3.format(".0f"))
-   	.scale(x)
-   	.orient("bottom");
+    .ticks(d3.max(data, function(d) { return d.paperCount; }))
+    .tickFormat(d3.format(".0f"))
+    .scale(x)
+    .orient("bottom");
 
 var yAxis = d3.svg.axis()
-   	.scale(y)
-   	.tickSize(0)
-   	.orient("left");
+    .scale(y)
+    .tickSize(0)
+    .orient("left");
 ```
 
 **6. Add chart elements (axes, axes label, bars and chart title)**
@@ -133,25 +133,25 @@ First we will add the grid lines for x axis. We want the grid line to appear beh
 
 ```javascript
 chart.append("g")
-	.attr("class", "grid")
-   	.attr("transform", "translate(0, " + height + ")")
-   	.call(xAxis.tickSize(-height, 0, 0).tickFormat(""));
+    .attr("class", "grid")
+    .attr("transform", "translate(0, " + height + ")")
+    .call(xAxis.tickSize(-height, 0, 0).tickFormat(""));
 ```
 
 Next, we will add the bars. The bars have to be added before the axes so that the edges of the bars does not cover the axes.
 
 ```javascript
 var bar = chart.selectAll(".bar")
-	.data(data)
-   	.enter()
-   	.append("g")
+    .data(data)
+    .enter()
+    .append("g")
 
 bar.append("rect")
-	.attr("class", "bar")
-	.attr("x", 0)
-	.attr("width", function(d) { return x(d.paperCount); })
-	.attr("y", function(d) { return y(d.name); })
-	.attr("height", y.rangeBand());
+    .attr("class", "bar")
+    .attr("x", 0)
+    .attr("width", function(d) { return x(d.paperCount); })
+    .attr("y", function(d) { return y(d.name); })
+    .attr("height", y.rangeBand());
 ```
 
 Now we can add the axes and its label.
@@ -159,39 +159,39 @@ Now we can add the axes and its label.
 ```javascript
 // Add x axis
 chart.append("g")
-	.attr("class", "x axis")
-   	.attr("transform", "translate(0, " + height + ")")
-   	.call(xAxis);
+    .attr("class", "x axis")
+    .attr("transform", "translate(0, " + height + ")")
+    .call(xAxis);
 
 // Add x axis label
 chart.append("text")
-	.attr("text-anchor", "middle")
-  	.attr("transform", "translate(" + width/2 + ", " + (height + 50) + ")")
-   	.attr("class", "label")
-  	.text("Number of Publications");
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate(" + width/2 + ", " + (height + 50) + ")")
+    .attr("class", "label")
+    .text("Number of Publications");
             
 // Add y axis
 chart.append("g")
-	.attr("class", "y axis")
-   	.call(yAxis)
-   	.append("text");
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text");
 
 // Add y axis label
 chart.append("text")
-   	.attr("text-anchor", "middle")
-   	.attr("transform", "translate("+ (0 - (margin.left/2 + 40)) + "," + (height/2) +")rotate(-90)")
-   	.attr("class", "label")
-   	.text("Author");      
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate("+ (0 - (margin.left/2 + 40)) + "," + (height/2) +")rotate(-90)")
+    .attr("class", "label")
+    .text("Author");      
 ```
 
 Finally, we will add the chart title.
 
 ```javascript
 chart.append("text")
-	.attr("text-anchor", "middle")
- 	.attr("transform", "translate(" + width/2 + ", " + (0 - (margin.top/2) + 10) + ")")
-  	.attr("class", "charttitle")
-  	.text("Top 10 Authors for Venue arXiv");
+    .attr("text-anchor", "middle")
+    .attr("transform", "translate(" + width/2 + ", " + (0 - (margin.top/2) + 10) + ")")
+    .attr("class", "charttitle")
+    .text("Top 10 Authors for Venue arXiv");
 ```
 
 **7. Add tooltip**
@@ -206,12 +206,12 @@ Next, we will need to add the styling for the tooltip. This is where you can edi
 
 ```
 .d3-tip {
-	line-height: 1;
-   	font: 14px sans-serif;
-   	padding: 12px;
-   	background: rgba(0, 0, 0, 0.8);
-   color: rgb(185, 185, 185);
- 	border-radius: 2px;
+    line-height: 1;
+    font: 14px sans-serif;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: rgb(185, 185, 185);
+    border-radius: 2px;
 }
 
 /* Creates a small triangle extender for the tooltip */
@@ -228,9 +228,9 @@ Next, we will need to add the styling for the tooltip. This is where you can edi
 }
 
 .d3-tip.n:after {
-	margin: -1px 0 0 0;
-   	top: 100%;
-   	left: 0;
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
 }
 ```
 
@@ -238,10 +238,11 @@ Now we need to add the javascript codes to display the tip dynamically.
 
 ```javascript
 var tip = d3.tip()
-	.attr('class', 'd3-tip')
-   	.offset([-10, 0])
-   	.html(function(d) {
-   		return "<div><span>Name:</span> <span style='color:white'>" + d.name + "</span></div>" + "<div><span>Total Publications:</span> <span style='color:white'>" + d.paperCount + "</span></div>";
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+        return "<div><span>Name: </span><span style='color:white'>" + d.name + "</span></div>"
+         + "<div><span>Total Publications: </span><span style='color:white'>" + d.paperCount + "</span></div>";
     })
 
 chart.call(tip);
@@ -251,13 +252,13 @@ Finally, for the javascript code to be called, we need to add the mouseover and 
 
 ```javascript
 bar.append("rect")
-	.attr("class", "bar")
-	.attr("x", 0)
-	.attr("width", function(d) { return x(d.paperCount); })
-	.attr("y", function(d) { return y(d.name); })
-	.attr("height", y.rangeBand())
-   	.on("mouseover", tip.show) // NEW
-  	.on("mouseout", tip.hide); //NEW
+    .attr("class", "bar")
+    .attr("x", 0)
+    .attr("width", function(d) { return x(d.paperCount); })
+    .attr("y", function(d) { return y(d.name); })
+    .attr("height", y.rangeBand())
+    .on("mouseover", tip.show) // NEW
+    .on("mouseout", tip.hide); //NEW
 ```
 
 ### Task 2 - Top 5 Papers for Venue arXiv
