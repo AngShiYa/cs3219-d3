@@ -1,30 +1,15 @@
-# CS3219 D3 Visualization
-
-## Set Up
-
-1. Open the terminal
-1. Navigate to the folder 'cs3219-d3'
-1. Enter the command 'python -m SimpleHTTPServer 8080'
-1. Open your browser and go to 'localhost:8080'
-1. Click the respective page you want to view
-
-
 # Assignment 4: CIR (Viz)
-
-Code Repository URL:<br>
-Front end: [[https://github.com/AngShiYa/cs3219-d3](https://github.com/AngShiYa/cs3219-d3)]<br>
-Back end: [[https://github.com/IanTeo/cs3219-Project](https://github.com/IanTeo/cs3219-Project)]
 
 
 Name | Matriculation Number | Feature Implemented
 ----|----|----|
 Ang Shi Ya | A0138601M | d3
-Ian Teo | A0139930B | Query & d3
-Yong Zhi Yuan | A0139655U | Model & Tests
+Ian Teo | A0139930B | Data Query & d3
+Yong Zhi Yuan | A0139655U | Data Model & Tests
 
 ## 1. Introduction
 
-For this assignment, we used the first 200,000 lines of the dataset from [http://labs.semanticscholar.org/corpus/](http://labs.semanticscholar.org/corpus/) to plot 5 visualizations. We parsed the data using the same model that we used in Assignment 3, and used d3.js to visualize the data on a website. The parser returns a JSON file based on the query, which is read by the website to plot the respective visualizations.
+For this assignment, we used the first 200,000 lines of the dataset from [http://labs.semanticscholar.org/corpus/](http://labs.semanticscholar.org/corpus/) to create 5 visualizations. We parsed the data using the same system that we used in Assignment 3, and used d3.js to visualize the data on a website. The parser returns a JSON file based on the query, which is read by the website to plot the respective visualizations.
 
 ## 2. Visualization - Purpose & Method
 
@@ -54,7 +39,7 @@ Barchart was chosen for this task because it is useful for displaying comparativ
 <em>Figure 2: Top 5 Papers for Venue arXiv based on number of in citations</em>
 </p>
 
-This task is similar to the previous task, except that we want the top 5 papers instead of top 10 authors. Similarly, a barchart works best for displaying this comparative data.
+This task is similar to the previous task, except that we want the top 5 papers instead of top 10 authors. Similarly, a barchart works best for displaying this type of data.
 
 ### Task 3 - Publication Trend for Venue ICSE
 
@@ -333,10 +318,5 @@ bar.append("rect")
     .attr("y", function(d) { return y(d.name); })
     .attr("height", y.rangeBand())
     .on("mouseover", tip.show) // NEW
-    .on("mouseout", tip.hide); //NEW
+    .on("mouseout", tip.hide); // NEW
 ```
-
-
-## 3. Other Information
-
-### Data Source
