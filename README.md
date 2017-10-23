@@ -43,7 +43,7 @@ No. | Task | Visualization
 <em>Figure 1: Top 10 Authors for Venue arXiv based on publications made across all available years </em>
 </p>
 
-Barchart was chosen for this task because it is useful for displaying comparative and ordinal data. Since there are quite a few number of authors to visualise, we have decided to use horizontal bars which works well with the top down reading pattern of the human eyes. The top down flow also makes it easier to convey ordered data, which in this case the longer bars are displayed on top of the shorter ones.
+Barchart was chosen for this task because it is useful for displaying comparative and ordinal data. Since there are quite a few number of authors to visualize, we have decided to use horizontal bars which works well with the top down reading pattern of the human eyes. The top down flow also makes it easier to convey ordered data, which in this case the longer bars are displayed on top of the shorter ones.
 
 
 ### Task 2 - Top 5 Papers for Venue arXiv
@@ -51,6 +51,12 @@ Barchart was chosen for this task because it is useful for displaying comparativ
 This task is similar to the previous task, except that we want the top 5 papers instead of top 10 authors. Similarly, a barchart works best for displaying this comparative data.
 
 ### Task 3 - Publication Trend for Venue ICSE
+
+<p align="center">
+<img src="Screenshots/3-dotplot.png" width="800"><br>
+
+<em>Figure 3: Trend of publications made for Venue ICSE across all available years </em>
+</p>
 
 Usually, line charts would be the ideal visualization to show trend, but in this case, we found that using a dot plot was more meaningful for this visualization, for the following reasons:
 
@@ -61,25 +67,45 @@ Usually, line charts would be the ideal visualization to show trend, but in this
 
 ### Task 4 - Citation Web for 'Low-density parity check codes over GF(q)'
 
+<p align="center">
+<img src="Screenshots/4-forcegraph.png" width="800"><br>
+
+<em>Figure 4: Citation web for base paper 'Low-density parity check codes over GF(q)' </em>
+</p>
+
 The best way to visualize a citation web would be to use a force-directed graph, where each node represents papers and each edge is a citation.
 
-It is not possible to show the details of each paper without cluttering the visualization, and we opted to use tooltips to show the related information on mouse over on the node.
+<p align="center">
+<img src="Screenshots/4-forcegraph-tooltip.png" width="800"><br>
 
-Although the citation was only 1 way, we chose not to show the directed edges as it made the graph harder to process, and instead showed their relationship in the legend.
+<em>Figure 5: Citation web with tooltip </em>
+</p>
+
+It is not possible to show the details of each paper without cluttering the visualization. Therefore, we decided to add the following enhancements:
+
+- Tooltips on mouseover to show more detailed information related to the paper, such as title, authors and year.
+- Show the citation relationship in the legend. Different colors represent different levels of citation, such as blue for the base paper and orange for the papers that directly cite the base paper.
+
 
 ### Task 5 - Words Frequency of Paper Titles
 
-The previous tasks were specific to venue or paper. We wanted to provide a broader view of the data, to give a complete view of the dataset we were using. For this, we decided to do a word cloud to show the popular topics amongst the papers in our dataset.
+<p align="center">
+<img src="Screenshots/5-wordcloud.png" width="800"><br>
+
+<em>Figure 4: Word frequency of paper titles' </em>
+</p>
+
+We wanted to provide a broader view of the data for this task, as the previous tasks all showed data specific to a certain title or venue. To give a complete view of the dataset we are using, we decided to do a word cloud to show the popular topics amongst the papers in our dataset.
 
 A word cloud enables us to quickly identify words that are repeated many times in the titles of all the papers, showing us the popular topics amongst all the papers.
 
 For example, from this visualization, we can see that neurology (**brain, receptor, neurons**) and biology (**cells, gene, disease**) are popular topics to write papers on, in our dataset.
 
-We can also see that words like **analysis, study and model** are popular topics, but we believe that it is because papers are always related to at least one of these topics.
+We can also see that words like **analysis, study and model** are used frequently, but we believe that it is because papers are always related to at least one of these research types.
 
 ### Steps to Create Visualization
 
-This guide shows how to create the most basic visualization, a barchart. We will be using Task 1 as the example.
+This guide shows how to create the most basic visualization, a barchart. We will be using Task 1 as the example. Other visualizations should follow similar steps.
 
 **1. Get json file for relevant data**
 
