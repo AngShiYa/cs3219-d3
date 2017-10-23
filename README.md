@@ -54,7 +54,7 @@ We chose to use dot plot to visualize the publication trend as the data was rela
 <p align="center">
 <img src="Screenshots/3-dotplot-tooltip.png" width="800"><br>
 
-<em>Figure 3: Publication trend with tooltip</em>
+<em>Figure 4: Publication trend with tooltip</em>
 </p>
 
 In order to show the additional data, such as paper title, authors and year, we used a tooltip to display the data on mouse over.
@@ -64,7 +64,7 @@ In order to show the additional data, such as paper title, authors and year, we 
 <p align="center">
 <img src="Screenshots/4-forcegraph.png" width="800"><br>
 
-<em>Figure 4: Citation web for base paper 'Low-density parity check codes over GF(q)'</em>
+<em>Figure 5: Citation web for base paper 'Low-density parity check codes over GF(q)'</em>
 </p>
 
 The best way to visualize a citation web would be to use a force-directed graph, where each node represents papers and each edge is a citation.
@@ -72,7 +72,7 @@ The best way to visualize a citation web would be to use a force-directed graph,
 <p align="center">
 <img src="Screenshots/4-forcegraph-tooltip-zoom.png" width="800"><br>
 
-<em>Figure 5: Citation web with tooltip</em>
+<em>Figure 6: Citation web with tooltip</em>
 </p>
 
 It is not possible to show the details of each paper without cluttering the visualization. Therefore, we decided to add the following enhancements:
@@ -81,13 +81,12 @@ It is not possible to show the details of each paper without cluttering the visu
 - Zoom in/out to show certain areas of interest more clearly.
 - Show the citation relationship in the legend. Different colors represent different levels of citation, such as blue for the base paper and orange for the papers that directly cite the base paper.
 
-
 ### Task 5 - Word Frequency of Paper Titles
 
 <p align="center">
 <img src="Screenshots/5-wordcloud.png" width="800"><br>
 
-<em>Figure 4: Word frequency of paper titles</em>
+<em>Figure 7: Word frequency of paper titles</em>
 </p>
 
 We wanted to provide a broader view of the data for this task, as the previous tasks all showed data specific to a certain title or venue. To give a complete view of the dataset we are using, we decided to do a word cloud to show the popular topics amongst the papers in our dataset.
@@ -109,7 +108,7 @@ Before we start creating the visualization, we need to obtain a json file repres
 >  The json file has the following format:<br>
 > `[{"name": "author name", "paperCount" : 3}, ... ]`
 
-**1. Import d3.js**
+**2. Import d3.js**
 
 Since we will be using D3 to create the charts, we will first need to import the javascript files from D3.
 
@@ -117,7 +116,7 @@ Since we will be using D3 to create the charts, we will first need to import the
 <script src="d3.v3.min.js"></script>
 ```
 
-**2. Create a `<div>` as a container for the chart elements**
+**3. Create a `<div>` as a container for the chart elements**
 
 Next, we will need a container for the chart. We will also be adding the axes, axes label and chart title into this container.
 
@@ -125,14 +124,14 @@ Next, we will need a container for the chart. We will also be adding the axes, a
 <div id="barchart"></div>
 ```
 
-**3. Set up SVG**
+**4. Set up SVG**
 
 Before we can add a SVG, we will first have to declare the dimensions and margins for the SVG.
 
 ```javascript
 var margin = {top: 80, right: 25, bottom: 60, left: 200},
     width = 960 - margin.left - margin.right,
-    height = 550 - margin.top - margin.bottom;
+    height = 800 - margin.top - margin.bottom;
 ```
 
 We can now append a SVG using the following code.
@@ -146,7 +145,7 @@ var chart = d3.select("#barchart")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 ```
 
-**4. Set up x and y scales**
+**5. Set up x and y scales**
 
 As we will need the chart to scale accordingly to the data, we will first grab the data. In this case since our API returns a json, we will be getting the data from the json file.
 
@@ -168,7 +167,7 @@ var y = d3.scale.ordinal()
     .domain(data.map(function(d) { return d.name; }));
 ```
 
-**5. Define x axis and y axis**
+**6. Define x axis and y axis**
 
 Using `d3.svg.axis()` we will be able to define the number of ticks, the display format and the orientation of the axis.
 
@@ -185,7 +184,7 @@ var yAxis = d3.svg.axis()
     .orient("left");
 ```
 
-**6. Add chart elements (axes, axes label, bars and chart title)**
+**7. Add chart elements (axes, axes label, bars and chart title)**
 
 Now that all the setting up is done, we can finally add the respective chart elements. There is no concept of z-index for SVG, so we will have to take note of the order of the elements that we are adding (since the earlier elements will be 'painted' over by newer elements).
 
@@ -254,7 +253,7 @@ chart.append("text")
     .text("Top 10 Authors for Venue arXiv");
 ```
 
-**7. Add tooltip**
+**8. Add tooltip**
 
 After creating the basic barchart, we can add tooltip to enhance the interactivity of the chart. We will be doing it using d3.tip.js, so first we would have to import the javascript file.
 
