@@ -40,13 +40,19 @@ No. | Task | Visualization
 <p align="center">
 <img src="Screenshots/1-hbarchart.png" width="800"><br>
 
-<em>Figure 1: Top 10 Authors for Venue arXiv based on publications made across all available years </em>
+<em>Figure 1: Top 10 Authors for Venue arXiv based on publications made across all available years</em>
 </p>
 
 Barchart was chosen for this task because it is useful for displaying comparative and ordinal data. Since there are quite a few number of authors to visualize, we have decided to use horizontal bars which works well with the top down reading pattern of the human eyes. The top down flow also makes it easier to convey ordered data, which in this case the longer bars are displayed on top of the shorter ones.
 
 
 ### Task 2 - Top 5 Papers for Venue arXiv
+
+<p align="center">
+<img src="Screenshots/2-vbarchart.png" width="800"><br>
+
+<em>Figure 2: Top 5 Papers for Venue arXiv based on number of in citations</em>
+</p>
 
 This task is similar to the previous task, except that we want the top 5 papers instead of top 10 authors. Similarly, a barchart works best for displaying this comparative data.
 
@@ -55,44 +61,48 @@ This task is similar to the previous task, except that we want the top 5 papers 
 <p align="center">
 <img src="Screenshots/3-dotplot.png" width="800"><br>
 
-<em>Figure 3: Trend of publications made for Venue ICSE across all available years </em>
+<em>Figure 3: Trend of publications made for Venue ICSE across all available years</em>
 </p>
 
-Usually, line charts would be the ideal visualization to show trend, but in this case, we found that using a dot plot was more meaningful for this visualization, for the following reasons:
+We chose to use dot plot to visualize the publication trend as the data was relatively small, and we could visualize every single paper on the chart, while still showing the overall trend using this chart. In addition, this visualization allows us to detect any gaps or anomaly in the data quickly.
 
-- The data is small, we can visualize every single paper, and thus, present more information in the same amount of space
-- Dot plot was more visually appealing as compared to the line chart
-- Dot plot allows us to detect any gaps or anomaly in the data quickly
-- The dot plot still serves the purpose of showing the shape of the data (trend), like a line chart
+<p align="center">
+<img src="Screenshots/3-dotplot-tooltip.png" width="800"><br>
+
+<em>Figure 3: Publication trend with tooltip</em>
+</p>
+
+In order to show the additional data, such as paper title, authors and year, we used a tooltip to display the data on mouse over.
 
 ### Task 4 - Citation Web for 'Low-density parity check codes over GF(q)'
 
 <p align="center">
 <img src="Screenshots/4-forcegraph.png" width="800"><br>
 
-<em>Figure 4: Citation web for base paper 'Low-density parity check codes over GF(q)' </em>
+<em>Figure 4: Citation web for base paper 'Low-density parity check codes over GF(q)'</em>
 </p>
 
 The best way to visualize a citation web would be to use a force-directed graph, where each node represents papers and each edge is a citation.
 
 <p align="center">
-<img src="Screenshots/4-forcegraph-tooltip.png" width="800"><br>
+<img src="Screenshots/4-forcegraph-tooltip-zoom.png" width="800"><br>
 
-<em>Figure 5: Citation web with tooltip </em>
+<em>Figure 5: Citation web with tooltip</em>
 </p>
 
 It is not possible to show the details of each paper without cluttering the visualization. Therefore, we decided to add the following enhancements:
 
 - Tooltips on mouseover to show more detailed information related to the paper, such as title, authors and year.
+- Zoom in/out to show certain areas of interest more clearly.
 - Show the citation relationship in the legend. Different colors represent different levels of citation, such as blue for the base paper and orange for the papers that directly cite the base paper.
 
 
-### Task 5 - Words Frequency of Paper Titles
+### Task 5 - Word Frequency of Paper Titles
 
 <p align="center">
 <img src="Screenshots/5-wordcloud.png" width="800"><br>
 
-<em>Figure 4: Word frequency of paper titles' </em>
+<em>Figure 4: Word frequency of paper titles</em>
 </p>
 
 We wanted to provide a broader view of the data for this task, as the previous tasks all showed data specific to a certain title or venue. To give a complete view of the dataset we are using, we decided to do a word cloud to show the popular topics amongst the papers in our dataset.
@@ -328,3 +338,5 @@ bar.append("rect")
 
 
 ## 3. Other Information
+
+### Data Source
