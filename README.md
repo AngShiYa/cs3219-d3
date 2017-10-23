@@ -24,6 +24,7 @@ Yong Zhi Yuan | A0139655U | Model & Tests
 
 ## 1. Introduction
 
+For this assignment, we used the first 200,000 lines of the dataset from [http://labs.semanticscholar.org/corpus/](http://labs.semanticscholar.org/corpus/) to plot 5 visualizations. We parsed the data using the same model that we used in Assignment 3, and used d3.js to visualize the data on a website. The parser returns a JSON file based on the query, which is read by the website to plot the respective visualizations.
 
 ## 2. Visualization - Purpose & Method
 
@@ -37,14 +38,55 @@ No. | Task | Visualization
 
 ### Task 1 - Top 10 Authors for Venue arXiv
 <p align="center">
-<img src="Screenshots/1-hbarchart.png" width="500"><br>
+<img src="Screenshots/1-hbarchart.png" width="800"><br>
 
 <em>Figure 1: Top 10 Authors for Venue arXiv based on publications made across all available years </em>
 </p>
 
 Barchart was chosen for this task because it is useful for displaying comparative and ordinal data. Since there are quite a few number of authors to visualise, we have decided to use horizontal bars which works well with the top down reading pattern of the human eyes. The top down flow also makes it easier to convey ordered data, which in this case the longer bars are displayed on top of the shorter ones.
 
-#### Steps
+
+### Task 2 - Top 5 Papers for Venue arXiv
+
+This task is similar to the previous task, except that we want the top 5 papers instead of top 10 authors. Similarly, a barchart works best for displaying this comparative data.
+
+### Task 3 - Publication Trend for Venue ICSE
+
+Usually, line charts would be the ideal visualization to show trend, but in this case, we found that using a dot plot was more meaningful for this visualization, for the following reasons:
+
+- The data is small, we can visualize every single paper, and thus, present more information in the same amount of space
+- Dot plot was more visually appealing as compared to the line chart
+- Dot plot allows us to detect any gaps or anomaly in the data quickly
+- The dot plot still serves the purpose of showing the shape of the data (trend), like a line chart
+
+### Task 4 - Citation Web for 'Low-density parity check codes over GF(q)'
+
+The best way to visualize a citation web would be to use a force-directed graph, where each node represents papers and each edge is a citation.
+
+It is not possible to show the details of each paper without cluttering the visualization, and we opted to use tooltips to show the related information on mouse over on the node.
+
+Although the citation was only 1 way, we chose not to show the directed edges as it made the graph harder to process, and instead showed their relationship in the legend.
+
+### Task 5 - Words Frequency of Paper Titles
+
+The previous tasks were specific to venue or paper. We wanted to provide a broader view of the data, to give a complete view of the dataset we were using. For this, we decided to do a word cloud to show the popular topics amongst the papers in our dataset.
+
+A word cloud enables us to quickly identify words that are repeated many times in the titles of all the papers, showing us the popular topics amongst all the papers.
+
+For example, from this visualization, we can see that neurology (**brain, receptor, neurons**) and biology (**cells, gene, disease**) are popular topics to write papers on, in our dataset.
+
+We can also see that words like **analysis, study and model** are popular topics, but we believe that it is because papers are always related to at least one of these topics.
+
+### Steps to Create Visualization
+
+This guide shows how to create the most basic visualization, a barchart. We will be using Task 1 as the example.
+
+**1. Get json file for relevant data**
+
+Before we start creating the visualization, we need to obtain a json file representing the data we want to visualize. For this project, the data is parsed in the back end to get a json file.
+
+>  The json file has the following format:<br>
+> `[{"name": "author name", "paperCount" : 3}, ... ]`
 
 **1. Import d3.js**
 
@@ -92,9 +134,6 @@ d3.json("arxiv-top-authors.json", function(data) {
     \\ codes
 });
 ```	
-
->  This json file has the following format:<br>
-> `[{"name": "author name", "paperCount" : 3} ... ]`
 
 We can now define the scales inside the call back.
 
@@ -260,14 +299,6 @@ bar.append("rect")
     .on("mouseover", tip.show) // NEW
     .on("mouseout", tip.hide); //NEW
 ```
-
-### Task 2 - Top 5 Papers for Venue arXiv
-
-### Task 3 - Publication Trend for Venue ICSE
-
-### Task 4 - Citation Web for 'Low-density parity check codes over GF(q)'
-
-### Task 5 - Words Frequency of Paper Titles
 
 
 ## 3. Other Information
