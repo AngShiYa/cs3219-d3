@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	  <meta charset="utf-8">
+	  <style>
+	  #chart {
+	  	float: left;
+	  }
+
+	  #dataseries {
+	  	margin-left: 10px;
+	  	height: 500px;
+	  }
+	  </style>
+	</head>
+  <body>
+    <div id="chart"></div>
+    <div id="dataseries"></div>
+    <script src="js/d3.v4.min.js"></script>
+    <script src="js/d3.tip.js"></script>
+    <script>
+    	// set the dimensions and margins of the graph
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    			width = 960 - margin.left - margin.right,
+    			height = 500 - margin.top - margin.bottom;
+
+    	// append svg object to the div
+    	// append a group element to svg
+    	// moves the group element to the top left margin
+    	var svg = d3.select("#chart")
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+
+    	// set the color of the graph
+    	var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    	// set the ranges
+			var x = d3.scaleLinear().range([0, width]);
+			var y = d3.scaleLinear().range([height, 0]);
+
+			// get the data
+      d3.json("multiline.json", function(data) {
+
+				data.forEach(function(d) {
+					d.author = d.series;
+				});
+
+      	// Scale the range of the data
+      	var minX = d3.min(data, function(kv) { return d3.min(kv.data, function(d) { return d.year; })});
+      	var maxX = d3.max(data, function(kv) { return d3.max(kv.data, function(d) { return d.year; })});
+      	var minY = d3.min(data, function(kv) { return d3.min(kv.data, function(d) { return d.count; })});
+      	var maxY = d3.max(data, function(kv) { return d3.max(kv.data, function(d) { return d.count; })});
+
+  			x.domain([minX, maxX]);
+  			y.domain([0, maxY]);
+
+  			// set the axes
+				var xAxis = d3.axisBottom(x).ticks(maxX - minX).tickFormat(d3.format("d"));
+				var yAxis = d3.axisLeft(y).ticks(maxY - 0);
+
+  			var line = d3.line()
+  				.x(function(d) { return x(d.year); })
+  				.y(function(d) { return y(d.count); });
+
+  			color.domain(data.map(function(d) { return d.author; }));
+
+  			// Add x axis
+        svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
+
+        // Add y axis
+        svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+        
+				var category = svg.selectAll(".category")
+					.data(data, function(d) { return d.author; })
+					.enter()
+					.append("g")
+					.attr("class", "category");
+
+				category.append("path")
+					.attr("class", "line")
+					.attr("d", function(d) { return line(d.data); })
+					.style("fill", "none")
+					.style("stroke", function(d) { return color(d.author); })
+					.style("stroke-width", "2")
+
+				var selection = d3.select("#dataseries").selectAll("input")
+					.data(data)
+					.enter()
+					.append("g")
+    			.attr("transform", function(d, i) { return "translate(100," +(i * 150) +")"; });
+
+				selection.append("input")
+					.attr("class", "selection")
+					.attr("checked", true)
+					.attr("type", "checkbox")
+					.attr("value", function(d) { return d.author; })
+					.on("change", update)
+
+				selection.append("text")
+	    		.text(function(d) { return d.author });
+
+				function update() {
+					var selections = [];
+					d3.selectAll(".selection").each(function(d) {
+						checkbox = d3.select(this);
+						if (checkbox.property("checked")) {
+							selections.push(checkbox.property("value"));
+						}
+					});
+
+					newData = data.filter(function(d) { 
+						return selections.indexOf(d.author) > -1 });
+
+					// Scale the range of the data
+	      	var minX = d3.min(newData, function(kv) { return d3.min(kv.data, function(d) { return d.year; })});
+	      	var maxX = d3.max(newData, function(kv) { return d3.max(kv.data, function(d) { return d.year; })});
+	      	var minY = d3.min(newData, function(kv) { return d3.min(kv.data, function(d) { return d.count; })});
+	      	var maxY = d3.max(newData, function(kv) { return d3.max(kv.data, function(d) { return d.count; })});
+
+	  			x.domain([minX, maxX]);
+	  			y.domain([0, maxY]);
+
+	  			// set the axes
+					var xAxis = d3.axisBottom(x).ticks(maxX - minX).tickFormat(d3.format("d"));
+					var yAxis = d3.axisLeft(y).ticks(maxY - 0);
+
+	  			var line = d3.line()
+  					.x(function(d) { return x(d.year); })
+  					.y(function(d) { return y(d.count); });
+
+  				var t = d3.transition().duration(300)
+
+	  			svg.select(".y").transition(t).call(yAxis);
+	  			svg.selectAll(".line").transition(t).attr("d", function(d) { return line(d.data); });
+
+					var category = svg.selectAll(".category")
+						.data(newData, function(d) { return d.author; });
+
+          var newCategory = category.enter().append("g")
+						.attr("class", "category");
+
+					newCategory.append("path")
+					  .attr("class", "line")
+					  .attr("d", function(d) { return line(d.data); })
+					  .style("fill", "none")
+					  .style("stroke", function(d) { return color(d.author); })
+					  .style("stroke-width", "2")
+
+				  category.exit().remove();
+        }	
+			});
+    </script>
+  </body>
+</html>

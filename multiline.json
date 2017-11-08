@@ -1,0 +1,65 @@
+[
+	{
+		"series": "Alice A. Alex",
+		"data": [
+			{
+				"year": 2001,
+				"count": 1
+			},
+			{
+				"year": 2002,
+				"count": 2
+			},
+			{
+				"year": 2003,
+				"count": 3
+			},
+			{
+				"year": 2004,
+				"count": 2
+			}
+		]
+	},
+	{
+		"series": "Elephante",
+		"data": [
+			{
+				"year": 2001,
+				"count": 2
+			},
+			{
+				"year": 2002,
+				"count": 1
+			},
+			{
+				"year": 2003,
+				"count": 3
+			},
+			{
+				"year": 2004,
+				"count": 4
+			}
+		]
+	},
+	{
+		"series": "Ian",
+		"data": [
+			{
+				"year": 2001,
+				"count": 10
+			},
+			{
+				"year": 2002,
+				"count": 11
+			},
+			{
+				"year": 2003,
+				"count": 10
+			},
+			{
+				"year": 2004,
+				"count": 11
+			}
+		]
+	}
+]
