@@ -1,18 +1,88 @@
+<!DOCTYPE html>
 <html>
-   <head>
-      <title>Sample Page</title>
-   </head>
-   
-   <body>
-      <a href='1-horizontal-barchart.html'>Horizontal Barchart</a><br>
-      <a href='2-vertical-barchart.html'>Vertical Barchart</a><br>
-      <a href='3-dotplot.html'>Dot plot</a><br>
-      <a href='4-forcegraph.html'>Force graph</a><br>
-      <a href='5-wordcloud.html'>Word Cloud</a>
-      <script>
+ <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CIR Visualization</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+  <script src="https://unpkg.com/vue"></script>
+  <style>
+    html, body {
+      background-color: #e7e7e8;
+    }
 
+    .card {
+      background-color: #27304b;
+      color: white;
+      font-weight: bold;
+      text-align: center;
+    }
 
-      </script>
-      <div id="myImg"></div>
-   </body>
+    .card:hover {
+     background-color: #137cc1;
+    }
+  </style>
+  </head>
+  <body>
+   <section class="section">
+    <div class="container is-fluid">
+     <h1 class="title">Select the query type</h1>
+
+     <div id="queries" class="columns is-multiline">
+      <div v-for="item in selections" class="column is-one-fifth">
+       <a v-bind:href="item.url" class="card">
+        <div class="card">
+         <div class="card-image">
+          <figure class="image is-4by3">
+           <img v-bind:src="item.icon" alt="">
+          </figure>
+         </div>
+         <div class="card-content">
+          <div class="content">
+           <p>{{item.name}}</p>
+          </div>
+         </div>
+        </div>
+       </a>
+      </div>
+     </div>
+
+    </div>
+   </section>
+   <script>
+    var app = new Vue({
+      el: '#queries',
+      data: {
+        selections: [
+          {  
+            url: "multiline-chart.html", 
+            icon: "images/linechart-icon.png", 
+            name: "Time Series" 
+          },
+          {  
+            url: "1-horizontal-barchart.html", 
+            icon: "images/piechart-icon.png", 
+            name: "Composition" 
+          },
+          {  
+            url: "1-horizontal-barchart.html", 
+            icon: "images/barchart-icon.png", 
+            name: "Comparison" 
+          },
+          {  
+            url: "4-forcegraph.html", 
+            icon: "images/network-icon.png", 
+            name: "Relationship" 
+          },
+          {  
+            url: "5-wordcloud.html", 
+            icon: "images/wordcloud-icon.png", 
+            name: "Text Analysis" 
+          }
+        ]
+      }
+    });
+   </script>  
+  </body>
 </html>
