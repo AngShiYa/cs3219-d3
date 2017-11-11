@@ -81,6 +81,11 @@
 	  	<div id="charttitle">
 	  		<h2>Citation Web for 'Low-density parity check codes over GF(q)'</h2>
 	  	</div>
+        <div id="filter">
+            <input type="text" id="level"/>
+            <input type="text" id="paper"/>
+            <button onclick="filterFunction()">Submit</button>
+        </div>
 	  	<div id="slider"></div>
 	    <div id="forcegraph"></div>
 	    <div id="legendarea"></div>
@@ -88,7 +93,13 @@
     <script src="js/d3.v4.min.js"></script>
     <script src="js/d3.tip.js"></script>
     <script>
-    var width = 960, 
+        function filterFunction() {
+            drawChart(document.getElementById("level").value, document.getElementById("paper").value);
+        }
+        function drawChart(level, paper) {
+        
+        }
+    var width = 960,
     	height = 600, 
     	radius = 5,
     	color = d3.scaleOrdinal(d3.schemeCategory10);
