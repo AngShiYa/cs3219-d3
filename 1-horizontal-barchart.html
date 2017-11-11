@@ -130,7 +130,7 @@
             measure = toFirstLetterUpperCase(measure);
             var margin = {top: 80, right: 25, bottom: 60, left: 200},
                 width = 960 - margin.left - margin.right,
-                height = 550 - margin.top - margin.bottom;
+                height = (count * 80) - margin.top - margin.bottom;
 
             var chart = d3.select("#barchart")
                 .append("svg")
@@ -211,12 +211,16 @@
                 chart.append("g")
                     .attr("class", "y axis")
                     .call(yAxis)
-                    .append("text");
+                    .selectAll("text")
+                    .attr("transform", "translate(-10, -20)")
+                    .attr("height", "80px")
+                    .attr("dominant-baseline", "text-before-edge")
+                    .call(wrap, y.rangeBand() + 70);
 
                 // Add y axis label
                 chart.append("text")
                     .attr("text-anchor", "middle")
-                    .attr("transform", "translate("+ (0 - (margin.left/2 + 40)) + "," + (height/2)  +")rotate(-90)")
+                    .attr("transform", "translate("+ (0 - (margin.left/2 + 50)) + "," + (height/2)  +")rotate(-90)")
                     .attr("class", "label")
                     .text(category + "s");
 
@@ -227,6 +231,30 @@
                     .attr("class", "charttitle")
                     .text("Top " + count + " " + category + "s by " + measure);
                     
+            });
+        }
+
+        function wrap(text, width) {
+            text.each(function() {
+                var text = d3.select(this),
+                    words = text.text().split(/\s+/).reverse(),
+                    word,
+                    line = [],
+                    lineNumber = 0,
+                    lineHeight = 1.1, // ems
+                    y = text.attr("y"),
+                    dy = parseFloat(text.attr("dy")),
+                    tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    }
+                }
             });
         }
     </script>
