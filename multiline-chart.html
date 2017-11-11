@@ -1,162 +1,334 @@
 <!DOCTYPE html>
 <html>
-  <head>
-	  <meta charset="utf-8">
-	  <style>
-	  #chart {
-	  	float: left;
-	  }
+ <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multiline Chart</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+  <script src="https://unpkg.com/vue"></script>
+  <script src="js/d3.v4.min.js"></script>
+  <script src="js/d3.tip.js"></script>
+  <style>
+  html, body {
+      background-color: #e7e7e8;
+  }
+  #plotarea {
+      float: left;
+  }
 
-	  #dataseries {
-	  	margin-left: 10px;
-	  	height: 500px;
-	  }
-	  </style>
-	</head>
+  #dataseries {
+      margin-left: 10px;
+      height: 500px;
+  }
+
+  input[type=checkbox] {
+      visibility: hidden;
+  }
+
+  .checkbox {
+      position: relative;
+      float: left;
+      width: 20px;
+      height: 20px;
+      background: #ddd;
+      border-radius: 100%;
+  }
+
+  .checkbox label {
+      position: absolute;
+      display: block;
+      width: 16px;
+      height: 16px;
+      border-radius: 100%;
+      transition: all .3s ease;
+      cursor: pointer;
+      top: 2px;
+      left: 2px;
+      z-index: 1;
+  }
+
+  .series {
+      margin-top: 5px;
+  }
+
+  .series text {
+      margin-left: 5px;
+  }
+  </style>
+ </head>
   <body>
-    <div id="chart"></div>
+   <div id="filter">
+        Category: <input type="text" id="category"/></br>
+        Measure: <input type="text" id="measure"/></br>
+        Author: <input type="text" id="author"/></br>
+        Venue: <input type="text" id="venue"/></br>
+        Paper: <input type="text" id="paper"/></br>
+        Start Year: <input type="text" id="startyear"/></br>
+        End Year: <input type="text" id="endyear"/></br>
+        <button onclick="filterFunction()">Submit</button>
+    </div>
+   <section class="section">
+    <div class="container is-fluid">
+
+    </div>
+   </div>
+   <section class="section">
+    <div class="container is-fluid">
+   <div id="chart">
+    <div id="plotarea"></div>
     <div id="dataseries"></div>
-    <script src="js/d3.v4.min.js"></script>
-    <script src="js/d3.tip.js"></script>
-    <script>
-    	// set the dimensions and margins of the graph
-			var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    			width = 960 - margin.left - margin.right,
-    			height = 500 - margin.top - margin.bottom;
+   </div>
+  </div>
+ </div>
+    
+ <script>
+    function filterFunction() {
+        d3.selectAll("svg").remove();
+        var category = document.getElementById("category").value;
+        var measure = document.getElementById("measure").value;
+        var author = document.getElementById("author").value;
+        var venue = document.getElementById("venue").value;
+        var paper = document.getElementById("paper").value;
+        var startYear = document.getElementById("startyear").value;
+        var endYear = document.getElementById("endyear").value;
+        var url = "http://128.199.249.171/top?count=" + count
+            + "&category=" + category + "&measure=" + measure;
+                
+        if (author != "") {
+            url = url + "&author=" + author;
+        }
+        if (venue != "") {
+            url = url + "&venue=" + venue;
+        }
+        if (paper != "") {
+            url = url + "&paper=" + paper;
+        }
+        if (startYear != "" && endYear != "") {
+            url = url + "&year=" + startYear + "-" + endYear;
+        }
+        drawChart(url);
+    }
 
-    	// append svg object to the div
-    	// append a group element to svg
-    	// moves the group element to the top left margin
-    	var svg = d3.select("#chart")
-          .append("svg")
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+    function drawChart(url) {
+        // set the dimensions and margins of the graph
+        var margin = {top: 20, right: 100, bottom: 30, left: 50},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
 
-    	// set the color of the graph
-    	var color = d3.scaleOrdinal(d3.schemeCategory10);
+        // set the color of the graph
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    	// set the ranges
-			var x = d3.scaleLinear().range([0, width]);
-			var y = d3.scaleLinear().range([height, 0]);
+        // append svg object to the div
+        // append a group element to svg
+        // moves the group element to the top left margin
+        var svg = d3.select("#plotarea")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
 
-			// get the data
-      d3.json("multiline.json", function(data) {
+        var mouseG = svg.append("g")
+            .attr("class", "mouse-over-effects");
 
-				data.forEach(function(d) {
-					d.author = d.series;
-				});
+        mouseG.append("path") // this is the black vertical line to follow mouse
+            .attr("class", "mouse-line")
+            .style("stroke", "black")
+            .style("stroke-width", "1px")
+            .style("opacity", "0");
 
-      	// Scale the range of the data
-      	var minX = d3.min(data, function(kv) { return d3.min(kv.data, function(d) { return d.year; })});
-      	var maxX = d3.max(data, function(kv) { return d3.max(kv.data, function(d) { return d.year; })});
-      	var minY = d3.min(data, function(kv) { return d3.min(kv.data, function(d) { return d.count; })});
-      	var maxY = d3.max(data, function(kv) { return d3.max(kv.data, function(d) { return d.count; })});
+        // set the ranges
+        var x = d3.scaleLinear().range([0, width]);
+        var y = d3.scaleLinear().range([height, 0]);
 
-  			x.domain([minX, maxX]);
-  			y.domain([0, maxY]);
+        var xAxis, yAxis;
+        var minX, maxX, minY, maxY;
 
-  			// set the axes
-				var xAxis = d3.axisBottom(x).ticks(maxX - minX).tickFormat(d3.format("d"));
-				var yAxis = d3.axisLeft(y).ticks(maxY - 0);
+        // get the data
+        d3.json("multiline.json", function(data) {
+            update(data);
 
-  			var line = d3.line()
-  				.x(function(d) { return x(d.year); })
-  				.y(function(d) { return y(d.count); });
+            color.domain(data.map(function(d) { return d.series; }));
 
-  			color.domain(data.map(function(d) { return d.author; }));
+            // Add x axis
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
 
-  			// Add x axis
-        svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
+            // Add y axis
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
 
-        // Add y axis
-        svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
-        
-				var category = svg.selectAll(".category")
-					.data(data, function(d) { return d.author; })
-					.enter()
-					.append("g")
-					.attr("class", "category");
+            var legend = d3.select("#dataseries").selectAll(".series")
+                .data(data)
+                .enter()
+                .append("div")
+                .attr("class", "series")
 
-				category.append("path")
-					.attr("class", "line")
-					.attr("d", function(d) { return line(d.data); })
-					.style("fill", "none")
-					.style("stroke", function(d) { return color(d.author); })
-					.style("stroke-width", "2")
+            var checkbox = legend.append("div")
+                .attr("class", "checkbox")
+             
+            checkbox.append("input")
+                .attr("class", "selection")
+                .attr("checked", true)
+                .attr("type", "checkbox")
+                .attr("value", function(d) { return d.series; })
+                .attr("id", function(d) { return d.series; })
+                .on("change", selectionChanged)
 
-				var selection = d3.select("#dataseries").selectAll("input")
-					.data(data)
-					.enter()
-					.append("g")
-    			.attr("transform", function(d, i) { return "translate(100," +(i * 150) +")"; });
+            checkbox.append("label")
+                .attr("for", function(d) { return d.series; })
+                .style("background", function(d) { return color(d.series); })
 
-				selection.append("input")
-					.attr("class", "selection")
-					.attr("checked", true)
-					.attr("type", "checkbox")
-					.attr("value", function(d) { return d.author; })
-					.on("change", update)
+            legend.append("text")
+                .text(function(d) { return d.series; });
 
-				selection.append("text")
-	    		.text(function(d) { return d.author });
+            function selectionChanged() {
+                var selections = [];
+                d3.selectAll(".selection").each(function(d) {
+                    var label = d3.select(this.parentNode).select("label")
+                    var checkbox = d3.select(this);
+                    if (checkbox.property("checked")) {
+                        selections.push(checkbox.property("value"));
+                        label.style("background", function(d) { return color(d.series); })
+                    } else {
+                        label.style("background", function(d) { return "#ddd"; })
+                    }
+                });
+                newData = data.filter(function(d) { return selections.indexOf(d.series) > -1 });
+                update(newData);      
+            }
+        });
 
-				function update() {
-					var selections = [];
-					d3.selectAll(".selection").each(function(d) {
-						checkbox = d3.select(this);
-						if (checkbox.property("checked")) {
-							selections.push(checkbox.property("value"));
-						}
-					});
+        function update(data) {
+            // scale the range of the data
+            minX = d3.min(data, function(kv) { return d3.min(kv.data, function(d) { return d.year; })});
+            maxX = d3.max(data, function(kv) { return d3.max(kv.data, function(d) { return d.year; })});
+            minY = d3.min(data, function(kv) { return d3.min(kv.data, function(d) { return d.count; })});
+            maxY = d3.max(data, function(kv) { return d3.max(kv.data, function(d) { return d.count; })});
 
-					newData = data.filter(function(d) { 
-						return selections.indexOf(d.author) > -1 });
+            x.domain([minX, maxX]);
+            y.domain([0, maxY]);
 
-					// Scale the range of the data
-	      	var minX = d3.min(newData, function(kv) { return d3.min(kv.data, function(d) { return d.year; })});
-	      	var maxX = d3.max(newData, function(kv) { return d3.max(kv.data, function(d) { return d.year; })});
-	      	var minY = d3.min(newData, function(kv) { return d3.min(kv.data, function(d) { return d.count; })});
-	      	var maxY = d3.max(newData, function(kv) { return d3.max(kv.data, function(d) { return d.count; })});
+            // set the axes
+            xAxis = d3.axisBottom(x).ticks(maxX - minX).tickFormat(d3.format("d"));
+            yAxis = d3.axisLeft(y).ticks(maxY - 0);
 
-	  			x.domain([minX, maxX]);
-	  			y.domain([0, maxY]);
+            var line = d3.line()
+                .x(function(d) { return x(d.year); })
+                .y(function(d) { return y(d.count); });
 
-	  			// set the axes
-					var xAxis = d3.axisBottom(x).ticks(maxX - minX).tickFormat(d3.format("d"));
-					var yAxis = d3.axisLeft(y).ticks(maxY - 0);
+            var t = d3.transition().duration(300)
 
-	  			var line = d3.line()
-  					.x(function(d) { return x(d.year); })
-  					.y(function(d) { return y(d.count); });
+            svg.select(".y").transition(t).call(yAxis);
+            svg.selectAll(".line").transition(t).attr("d", function(d) { return line(d.data); });
 
-  				var t = d3.transition().duration(300)
+            var category = svg.selectAll(".category")
+                .data(data, function(d) { return d.series; });
 
-	  			svg.select(".y").transition(t).call(yAxis);
-	  			svg.selectAll(".line").transition(t).attr("d", function(d) { return line(d.data); });
+            category.exit().remove();
 
-					var category = svg.selectAll(".category")
-						.data(newData, function(d) { return d.author; });
+            category = category.enter().append("g")
+                .attr("class", "category");
 
-          var newCategory = category.enter().append("g")
-						.attr("class", "category");
+            category.append("path")
+                .attr("class", "line")
+                .attr("d", function(d) { return line(d.data); })
+                .style("fill", "none")
+                .style("stroke", function(d) { return color(d.series); })
+                .style("stroke-width", "2");
 
-					newCategory.append("path")
-					  .attr("class", "line")
-					  .attr("d", function(d) { return line(d.data); })
-					  .style("fill", "none")
-					  .style("stroke", function(d) { return color(d.author); })
-					  .style("stroke-width", "2")
+            //var lines = document.getElementsByClassName('line');
+            var mousePerLine = mouseG.selectAll('.mouse-per-line')
+                .data(data, function(d) { return d.series; });
 
-				  category.exit().remove();
-        }	
-			});
+            mousePerLine.exit().remove();
+
+            mousePerLine = mousePerLine.enter().append("g")
+                .attr("class", "mouse-per-line");
+
+            mousePerLine.append("circle")
+                .attr("r", 7)
+                .style("stroke", function(d) { return color(d.series); })
+                .style("fill", "none")
+                .style("stroke-width", "1px")
+                .style("opacity", "0");
+
+            mouseG.selectAll(".tooltip").remove();
+
+            var tooltip = mouseG.append("g")
+                .attr("class", "tooltip")
+                .style("opacity", "0")
+
+            var tooltipData = tooltip.selectAll(".tooltip-data")
+                .data(data, function(d) { return d.series; })
+                .enter().append("g")
+                .attr("class", "tooltip-data")
+                .attr("transform", function(d, i) {
+                    return "translate(0," + i * 20 + ")";
+                })
+
+            tooltipData.append("circle")
+                .attr("r", 5)
+                .style("fill", function(d) { return color(d.series); })
+
+            tooltipData.append("text")
+                .attr("class", "tooltip-data-text");
+
+            mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+                .attr('width', width) // can't catch mouse events on a g element
+                .attr('height', height)
+                .attr('fill', 'none')
+                .attr('pointer-events', 'all')
+                .on('mouseout', function() { // on mouse out hide line, circles and text
+                    d3.select(".mouse-line").style("opacity", "0");
+                    d3.selectAll(".mouse-per-line circle").style("opacity", "0");
+                    d3.selectAll(".tooltip").style("opacity", "0");
+                }).on('mouseover', function() { // on mouse in show line, circles and text
+                    d3.select(".mouse-line").style("opacity", "1");
+                    d3.selectAll(".mouse-per-line circle").style("opacity", "1");
+                    d3.selectAll(".tooltip").style("opacity", "1");
+                }).on('mousemove', function() { // mouse moving over canvas
+                    var mouse = d3.mouse(this);
+                    var xDate, bisect, d0, d1, point;
+
+                    d3.selectAll(".mouse-per-line")
+                        .attr("transform", function(d, i) {
+                            xDate = x.invert(mouse[0]);
+                            bisect = d3.bisector(function(d) { return d.year; }).right;
+                            idx = bisect(d.data, xDate);
+                            d0 = d.data[idx - 1];
+                            d1 = d.data[idx];
+                            point = xDate - d0.year > d1.year - xDate ? d1 : d0;
+              
+                            return "translate(" + x(point.year) + "," + y(point.count) +")";
+                        });
+
+                    d3.select(".mouse-line")
+                        .attr("d", function() {
+                    var d = "M" + x(point.year) + "," + height;
+                    d += " " + x(point.year) + "," + 0;
+                    return d;
+                });
+
+                d3.select(".tooltip")
+                    .attr("transform", "translate(" + (x(point.year) + 20) + "," + height/2 +")");
+
+                d3.selectAll(".tooltip-data-text")
+                    .attr("transform", "translate(" + 10 + "," + 5 +")")
+                    .text(function(d) {
+                        return d.data
+                            .filter(function(pair) { return pair.year == point.year; })
+                            .map(function(pair) { return pair.count; });
+                    });
+
+                })
+
+            }
+        }
     </script>
   </body>
 </html>
