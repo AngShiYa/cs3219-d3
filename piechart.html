@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Top 10 Authors for Venue arXiv</title>
+    <style>
+	    body {
+	    	font-family: helvetica;
+	    }
+
+        #piechart {
+            width: 960px;
+            margin: auto;
+        }
+
+        .charttitle {
+            font-size: 26px;
+            font-weight: bold;
+        }
+        .arc text {
+            font: 10px sans-serif;
+            text-anchor: middle;
+        }
+
+        .arc path {
+            stroke: #fff;
+        }
+    
+        .d3-tip {
+            line-height: 1;
+            font: 14px sans-serif;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: rgb(185, 185, 185);
+            border-radius: 2px;
+        }
+
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.8);
+            content: "\25BC";
+            position: absolute;
+            text-align: center;
+        }
+
+        .d3-tip.n:after {
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="filter">
+        Count: <input type="text" id="count"/></br>
+        Category: <input type="text" id="category"/></br>
+        Measure: <input type="text" id="measure"/></br>
+        Author: <input type="text" id="author"/></br>
+        Venue: <input type="text" id="venue"/></br>
+        Paper: <input type="text" id="paper"/></br>
+        Start Year: <input type="text" id="startyear"/></br>
+        End Year: <input type="text" id="endyear"/></br>
+        <button onclick="filterFunction()">Submit</button>
+    </div>
+	<div id="piechart"></div>
+    <script src="js/d3.v4.min.js"></script>
+    <script src="js/d3.tip.js"></script>
+    <script>
+        function filterFunction() {
+            d3.selectAll("svg").remove();
+            var count = document.getElementById("count").value;
+            var category = document.getElementById("category").value;
+            var measure = document.getElementById("measure").value;
+            var author = document.getElementById("author").value;
+            var venue = document.getElementById("venue").value;
+            var paper = document.getElementById("paper").value;
+            var startYear = document.getElementById("startyear").value;
+            var endYear = document.getElementById("endyear").value;
+            var url = "http://128.199.249.171/top?count=" + count
+                + "&category=" + category + "&measure=" + measure;
+                
+            if (author != "") {
+                url = url + "&author=" + author;
+            }
+            if (venue != "") {
+                url = url + "&venue=" + venue;
+            }
+            if (paper != "") {
+                url = url + "&paper=" + paper;
+            }
+            if (startYear != "" && endYear != "") {
+                url = url + "&year=" + startYear + "-" + endYear;
+            }
+            drawChart(url, count, category, measure);
+        }
+
+        function toFirstLetterUpperCase(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+    
+        function drawChart(url, count, category, measure) {
+            category = toFirstLetterUpperCase(category);
+            measure = toFirstLetterUpperCase(measure);
+           
+    
+            var margin = {top: 80, right: 25, bottom: 60, left: 200},
+                width = 960 - margin.left - margin.right,
+                height = 550 - margin.top - margin.bottom;
+                radius = Math.min(width, height) / 2;
+                color = d3.scaleOrdinal(d3.schemaCategory10);
+                
+            var arc = d3.arc()
+                .outerRadius(radius - 10)
+                .innerRadius(radius - 70);
+                    
+            var labelArc = d3.arc()
+                .outerRadius(radius - 40)
+                .innerRadius(radius - 40);
+                
+            var pie = d3.pie()
+                .sort(null)
+                .value(function(d) { return d; });
+                    
+            var chart = d3.select("#piechart")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                
+            d3.json("data/fake.json", function(data) {
+                data.forEach(function(d) {
+                    d.count = d3.sum(d.data.map(function(pair) { return pair.count; }));
+                });
+                
+                var g = chart.selectAll(".arc")
+                    .data(pie(data))
+                    .enter()
+                    .append("g")
+                        .attr("class", "arc");
+                    
+                g.append("path")
+                    .attr("d", arc)
+                    .style("fill", function(d) { return color(d.count); });
+                    
+                g.append("text")
+                    .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+                    .attr("dy", ".35em")
+                    .text(function(d) { return d.data.category; });
+                    
+            });
+            
+        }
+    </script>
+  </body>
+</html>
