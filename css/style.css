@@ -1,0 +1,115 @@
+html, body {
+  background-color: #e7e7e8;
+  font-family: helvetica;
+}
+
+.charttitle {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.node:hover {
+  stroke: #ffcc5c;
+  stroke-width: 2px;
+  r: 7px;
+  -webkit-transition: r 0.2s; /* Safari */
+  transition: r 0.2s;
+}
+
+.link {
+  fill: none;
+  stroke: #bbb;
+}
+
+.axis {
+  font-size: 11px;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #333333;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+
+.grid .tick {
+  stroke: #9c9c9c;
+  stroke-opacity: 0.4;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: #99aab5;
+}
+
+.bar:hover {
+  fill: #fa8080;
+}
+
+  .checkbox {
+      position: relative;
+      float: left;
+      width: 20px;
+      height: 20px;
+      background: #ddd;
+      border-radius: 100%;
+  }
+
+  .checkbox label {
+      position: absolute;
+      display: block;
+      width: 16px;
+      height: 16px;
+      border-radius: 100%;
+      transition: all .3s ease;
+      cursor: pointer;
+      top: 2px;
+      left: 2px;
+      z-index: 1;
+  }
+
+  .series {
+      margin-top: 5px;
+  }
+
+  .series text {
+      margin-left: 5px;
+  }
+
+.label {
+  fill: #2d2d2d;
+  font-size: 15px;
+}
+
+.d3-tip {
+  line-height: 1;
+  font: 14px sans-serif;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: rgb(185, 185, 185);
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}

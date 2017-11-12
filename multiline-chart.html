@@ -157,6 +157,7 @@
 
         // get the data
         d3.json(url, function(error, data) {
+<<<<<<< HEAD
           if (error) {
             alert("Error parsing parameters. Please try again");
           }
@@ -188,6 +189,43 @@
 
           var checkbox = legend.append("div")
             .attr("class", "checkbox")
+=======
+            if (error) {
+                alert("Error parsing parameters. Please try again");
+            }
+            if (data.error != null) {
+                alert(data.error);
+                return;
+            }
+            if(data == "") {
+                alert("No data to display");
+                return;
+            }
+
+            update(data);
+
+            color.domain(data.map(function(d) { return d.series; }));
+
+            // Add x axis
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+
+            // Add y axis
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis);
+
+            var legend = d3.select("#dataseries").selectAll(".series")
+                .data(data)
+                .enter()
+                .append("div")
+                .attr("class", "series")
+
+            var checkbox = legend.append("div")
+                .attr("class", "checkbox")
+>>>>>>> 6a8b2eeaf1461356407b7f5fb6b825c637907d42
              
           checkbox.append("input")
             .attr("class", "selection")
