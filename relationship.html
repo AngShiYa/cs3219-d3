@@ -3,80 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title>Citation Web</title>
+    <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
     <style>
-    	body {
-	    	font-family: helvetica;
-	    }
+      #forcegraph {
+        width: 960px;
+        margin: auto;
+        border-color: #a5a5a5;
+      }
 
-	    #charttitle {
-	    	text-align: center;
-	    }
+      #legendarea {
+        width: 960px;
+        margin: auto;
+      }
 
-	    #forcegraph {
-            width: 960px;
-            margin: auto;
-            /* border: solid 1px; */
-            border-color: #a5a5a5;
-        }
-
-        #legendarea {
-            width: 960px;
-            margin: auto;
-        }
-
-        .legend text {
-        	font-size: 13px;
-        	fill: #3c3c3c;
-        }
-
-    	.node {
-  			stroke: #fff;
-  			stroke-width: 1.5px;
-		}
-
-		.node:hover {
-			stroke: #ffcc5c;
-  			stroke-width: 2px;
-  			r: 7px;
-  			-webkit-transition: r 0.2s; /* Safari */
-    		transition: r 0.2s;
-		}
-
-		.link {
-  			fill: none;
-  			stroke: #bbb;
-		}
-
-		.d3-tip {
-            line-height: 1;
-            font: 14px sans-serif;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.8);
-            color: rgb(185, 185, 185);
-            border-radius: 2px;
-        }
-
-        /* Creates a small triangle extender for the tooltip */
-        .d3-tip:after {
-            box-sizing: border-box;
-            display: inline;
-            font-size: 10px;
-            width: 100%;
-            line-height: 1;
-            color: rgba(0, 0, 0, 0.8);
-            content: "\25BC";
-            position: absolute;
-            text-align: center;
-        }
-
-        .d3-tip.n:after {
-            margin: -1px 0 0 0;
-            top: 100%;
-            left: 0;
-        }
+      .legend text {
+        font-size: 13px;
+        fill: #3c3c3c;
+      }
     </style>
-    </head>
-  	<body>
+  </head>
+  <body>
   	<div id="chartarea">
 	  	<div id="charttitle">
 	  		<h2>Citation Web for 'Low-density parity check codes over GF(q)'</h2>
@@ -89,7 +35,7 @@
 	  	<div id="slider"></div>
 	    <div id="forcegraph"></div>
 	    <div id="legendarea"></div>
-	</div>
+	  </div>
     <script src="js/d3.v4.min.js"></script>
     <script src="js/d3.tip.js"></script>
     <script>

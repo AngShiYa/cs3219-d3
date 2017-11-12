@@ -9,10 +9,8 @@
   <script src="https://unpkg.com/vue"></script>
   <script src="js/d3.v4.min.js"></script>
   <script src="js/d3.tip.js"></script>
+  <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
   <style>
-  html, body {
-      background-color: #e7e7e8;
-  }
   #plotarea {
       float: left;
   }
@@ -24,36 +22,6 @@
 
   input[type=checkbox] {
       visibility: hidden;
-  }
-
-  .checkbox {
-      position: relative;
-      float: left;
-      width: 20px;
-      height: 20px;
-      background: #ddd;
-      border-radius: 100%;
-  }
-
-  .checkbox label {
-      position: absolute;
-      display: block;
-      width: 16px;
-      height: 16px;
-      border-radius: 100%;
-      transition: all .3s ease;
-      cursor: pointer;
-      top: 2px;
-      left: 2px;
-      z-index: 1;
-  }
-
-  .series {
-      margin-top: 5px;
-  }
-
-  .series text {
-      margin-left: 5px;
   }
   </style>
  </head>
