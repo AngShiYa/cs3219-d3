@@ -2,160 +2,314 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Top 10 Authors for Venue arXiv</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pie Chart</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="js/d3.v4.min.js"></script>
     <style>
-	    body {
-	    	font-family: helvetica;
-	    }
-
-        #piechart {
-            width: 960px;
-            margin: auto;
-        }
-
-        .charttitle {
-            font-size: 26px;
-            font-weight: bold;
-        }
-        .arc text {
-            font: 10px sans-serif;
-            text-anchor: middle;
-        }
-
-        .arc path {
-            stroke: #fff;
-        }
-    
-        .d3-tip {
-            line-height: 1;
-            font: 14px sans-serif;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.8);
-            color: rgb(185, 185, 185);
-            border-radius: 2px;
-        }
-
-        /* Creates a small triangle extender for the tooltip */
-        .d3-tip:after {
-            box-sizing: border-box;
-            display: inline;
-            font-size: 10px;
-            width: 100%;
-            line-height: 1;
-            color: rgba(0, 0, 0, 0.8);
-            content: "\25BC";
-            position: absolute;
-            text-align: center;
-        }
-
-        .d3-tip.n:after {
-            margin: -1px 0 0 0;
-            top: 100%;
-            left: 0;
-        }
+      html, body {
+        background-color: white;
+      }
+      polyline {
+    opacity: .3;
+    stroke: black;
+    stroke-width: 1px;
+    fill: none;
+}
     </style>
   </head>
   <body>
-    <div id="filter">
-        Count: <input type="text" id="count"/></br>
-        Category: <input type="text" id="category"/></br>
-        Measure: <input type="text" id="measure"/></br>
-        Author: <input type="text" id="author"/></br>
-        Venue: <input type="text" id="venue"/></br>
-        Paper: <input type="text" id="paper"/></br>
-        Start Year: <input type="text" id="startyear"/></br>
-        End Year: <input type="text" id="endyear"/></br>
-        <button onclick="filterFunction()">Submit</button>
-    </div>
-	<div id="piechart"></div>
-    <script src="js/d3.v4.min.js"></script>
-    <script src="js/d3.tip.js"></script>
+	  <div id="chart"></div>
     <script>
-        function filterFunction() {
-            d3.selectAll("svg").remove();
-            var count = document.getElementById("count").value;
-            var category = document.getElementById("category").value;
-            var measure = document.getElementById("measure").value;
-            var author = document.getElementById("author").value;
-            var venue = document.getElementById("venue").value;
-            var paper = document.getElementById("paper").value;
-            var startYear = document.getElementById("startyear").value;
-            var endYear = document.getElementById("endyear").value;
-            var url = "http://128.199.249.171/top?count=" + count
-                + "&category=" + category + "&measure=" + measure;
-                
-            if (author != "") {
-                url = url + "&author=" + author;
-            }
-            if (venue != "") {
-                url = url + "&venue=" + venue;
-            }
-            if (paper != "") {
-                url = url + "&paper=" + paper;
-            }
-            if (startYear != "" && endYear != "") {
-                url = url + "&year=" + startYear + "-" + endYear;
-            }
-            drawChart(url, count, category, measure);
+      var width = 960, 
+        height = 500,
+        radius = (Math.min(width, height) * 0.8) /2,
+        color = d3.scaleOrdinal(d3.schemeCategory20c);
+
+      var arc = d3.arc()
+        .innerRadius(radius * 0.6)
+        .outerRadius(radius * 0.9);
+
+      var overArc = d3.arc()
+        .innerRadius(radius * 0.6)
+        .outerRadius(radius * 0.95);
+
+      var labelArc = d3.arc()
+        .innerRadius(radius)
+        .outerRadius(radius);
+
+      var svg = d3.select('#chart')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
+
+      var center = svg.append("g")
+        .attr("class", "center");
+
+      var slices = svg.append("g")
+          .attr("class", "slices");
+
+      var labels = svg.append("g")
+          .attr("class", "labels");
+
+      var lines = svg.append("g")
+          .attr("class", "lines");
+
+      var pie = d3.pie()
+        .value(function(d) { return d.count; })
+        .sort(null);
+
+      d3.json("multiline.json", function(data) {
+        data.forEach(function(d) {
+          d.count = d3.sum(d.data.map(function(pair) { return pair.count; }));
+        });
+        var total = d3.sum(data.map(function(d) { return d.count }));
+
+        var setCenterText = function() {
+          var selected = d3.selectAll(".clicked");
+          var sum = d3.sum(d3.selectAll('.clicked').data(), function(d) {
+                return d.data.count;
+            });
+
+          if (selected.size() == 0) {
+            center.select("circle").on("click")();
+          } else {
+            d3.select('.center-value').text(sum);
+            d3.select('.center-percentage').text((sum/total*100).toFixed(2) + '%');
+          }   
         }
 
-        function toFirstLetterUpperCase(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
+        var resetCenterText = function() {
+            d3.select('.center-value').text(total);
+            d3.select('.center-percentage').text("100%");
         }
-    
-        function drawChart(url, count, category, measure) {
-            category = toFirstLetterUpperCase(category);
-            measure = toFirstLetterUpperCase(measure);
-           
-    
-            var margin = {top: 80, right: 25, bottom: 60, left: 200},
-                width = 960 - margin.left - margin.right,
-                height = 550 - margin.top - margin.bottom;
-                radius = Math.min(width, height) / 2;
-                color = d3.scaleOrdinal(d3.schemaCategory10);
-                
-            var arc = d3.arc()
-                .outerRadius(radius - 10)
-                .innerRadius(radius - 70);
-                    
-            var labelArc = d3.arc()
-                .outerRadius(radius - 40)
-                .innerRadius(radius - 40);
-                
-            var pie = d3.pie()
-                .sort(null)
-                .value(function(d) { return d; });
-                    
-            var chart = d3.select("#piechart")
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                
-            d3.json("data/fake.json", function(data) {
-                data.forEach(function(d) {
-                    d.count = d3.sum(d.data.map(function(pair) { return pair.count; }));
+
+        // add center circle
+        center.append("circle")
+          .attr("r", radius * 0.5)
+          .style("fill","#e7e7e7")
+          .on("mouseover", function(d) {
+            d3.select(this).transition().duration(300).attr("r", radius * 0.55);
+          })
+          .on("mouseout", function(d) {
+            d3.select(this).transition().duration(300).attr("r", radius * 0.5);
+          })
+          .on("click", function(d) {
+            var selected = d3.selectAll(".clicked");
+            selected.classed("clicked", false);
+            selected.each(function(e) {
+              d3.select(this).transition().duration(300).attr("d", arc);
+            })
+            resetCenterText();
+          })
+
+        center.append('text')
+          .attr('class', 'center-type')
+          .attr('y', radius * -0.16)
+          .attr('text-anchor', 'middle')
+          .style('font-weight', 'bold')
+          .text("Papers");
+
+        center.append('text')
+          .attr('class', 'center-value')
+          .attr('text-anchor', 'middle');
+
+        center.append('text')
+          .attr('class', 'center-percentage')
+          .attr('y', radius * 0.16)
+          .attr('text-anchor', 'middle')
+          .style('fill', '#a2a2a2');
+
+        resetCenterText();
+
+        // add the slices
+        var path = slices.selectAll('path')
+          .data(pie(data))
+          .enter()
+          .append('path')
+          .attr('d', arc)
+          .attr('fill', function(d, i) { return color(d.data.series); });
+
+        path.on("mouseover", function(d) {
+          var slice = d3.select(this);
+          slice.transition().duration(300).attr("d", overArc);
+          d3.select('.center-value').text(d.data.count);
+          d3.select('.center-percentage').text((d.data.count/total*100).toFixed(2) + '%');
+        });
+
+        path.on("mouseout", function(d) {
+          var slice = d3.select(this);
+          if (!slice.classed("clicked")) {
+            slice.transition().duration(300).attr("d", arc);
+          }
+          setCenterText();
+        })
+
+        path.on("click", function(d) {
+          var slice = d3.select(this);
+          slice.classed("clicked", !slice.classed("clicked"));
+          if (!slice.classed("clicked")) {
+            slice.transition().duration(300).attr("d", arc);
+          }
+          setCenterText();
+        })
+
+        // add the labels
+        var text = labels.selectAll("text")
+          .data(pie(data))
+          .enter()
+          .append("text")
+          .attr('class', 'label')
+          .attr('id', function(d, i) { return 'l-' + i; })
+          .attr("transform", function(d) {
+            var pos = labelArc.centroid(d);
+            pos[0] = radius * (midAngle(d) < Math.PI ? 1 : -1);
+            return "translate(" + pos + ")";
+          })
+          .style("text-anchor", function(d) {
+            return midAngle(d) < Math.PI ? "start" : "end";
+          })
+          .attr("dy", ".35em")
+          .attr("dx", ".35em")
+          .text(function(d) { return d.data.series; })
+          .call(wrap, width/2);
+
+          arrangeLabels(svg, ".label");
+
+          // ad line connectors
+          var polyline = lines.selectAll("polyline")
+                .data(pie(data))
+                .enter()
+                .append("polyline")
+                .attr("points", function(d, j) {
+                    var offset = midAngle(d) < Math.PI ? 0 : 10;
+                    var label = d3.select('#l-' + j);
+                    var transform = getTransformation(label.attr("transform"));
+                    var pos = labelArc.centroid(d);
+                    pos[0] = transform.translateX + offset;
+                    pos[1] = transform.translateY;
+                    var mid = labelArc.centroid(d);
+                    mid[1] = transform.translateY;
+                    return [arc.centroid(d), mid, pos];
                 });
-                
-                var g = chart.selectAll(".arc")
-                    .data(pie(data))
-                    .enter()
-                    .append("g")
-                        .attr("class", "arc");
-                    
-                g.append("path")
-                    .attr("d", arc)
-                    .style("fill", function(d) { return color(d.count); });
-                    
-                g.append("text")
-                    .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
-                    .attr("dy", ".35em")
-                    .text(function(d) { return d.data.category; });
-                    
+
+      });
+
+
+
+      // helper functions [to be extracted into another file]
+      function midAngle(d) {
+        return d.startAngle + (d.endAngle - d.startAngle) / 2;
+      }
+      function getTransformation(transform) {
+    /*
+     * This code comes from a StackOverflow answer to a question looking
+     * to replace the d3.transform() functionality from v3.
+     * http://stackoverflow.com/questions/38224875/replacing-d3-transform-in-d3-v4
+     */
+    var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    g.setAttributeNS(null, "transform", transform);
+    var matrix = g.transform.baseVal.consolidate()
+        .matrix;
+
+    var {
+        a,
+        b,
+        c,
+        d,
+        e,
+        f
+    } = matrix;
+    var scaleX, scaleY, skewX;
+    if (scaleX = Math.sqrt(a * a + b * b)) a /= scaleX, b /= scaleX;
+    if (skewX = a * c + b * d) c -= a * skewX, d -= b * skewX;
+    if (scaleY = Math.sqrt(c * c + d * d)) c /= scaleY, d /= scaleY, skewX /= scaleY;
+    if (a * d < b * c) a = -a, b = -b, skewX = -skewX, scaleX = -scaleX;
+    return {
+        translateX: e,
+        translateY: f,
+        rotate: Math.atan2(b, a) * Math.PI / 180,
+        skewX: Math.atan(skewX) * Math.PI / 180,
+        scaleX: scaleX,
+        scaleY: scaleY
+    };
+}
+
+
+function arrangeLabels(selection, label_class) {
+    var move = 1;
+    while (move > 0) {
+        move = 0;
+        selection.selectAll(label_class)
+            .each(function() {
+                var that = this;
+                var a = this.getBoundingClientRect();
+                selection.selectAll(label_class)
+                    .each(function() {
+                        if (this != that) {
+                            var b = this.getBoundingClientRect();
+                            if ((Math.abs(a.left - b.left) * 2 < (a.width + b.width)) && (Math.abs(a.top - b.top) * 2 < (a.height + b.height))) {
+                                var dx = (Math.max(0, a.right - b.left) + Math.min(0, a.left - b.right)) * 0.01;
+                                var dy = (Math.max(0, a.bottom - b.top) + Math.min(0, a.top - b.bottom)) * 0.02;
+                                var tt = getTransformation(d3.select(this)
+                                    .attr("transform"));
+                                var to = getTransformation(d3.select(that)
+                                    .attr("transform"));
+                                move += Math.abs(dx) + Math.abs(dy);
+
+                                to.translate = [to.translateX + dx, to.translateY + dy];
+                                tt.translate = [tt.translateX - dx, tt.translateY - dy];
+                                d3.select(this)
+                                    .attr("transform", "translate(" + tt.translate + ")");
+                                d3.select(that)
+                                    .attr("transform", "translate(" + to.translate + ")");
+                                a = this.getBoundingClientRect();
+                            }
+                        }
+                    });
             });
-            
+    }
+}
+
+function wrap(text, width) {
+    text.each(function() {
+        var text = d3.select(this);
+        var words = text.text()
+            .split(/\s+/)
+            .reverse();
+        var word;
+        var line = [];
+        var lineHeight = 1;
+        var y = 0 //text.attr("y");
+        var x = 0;
+        var dy = parseFloat(text.attr("dy"));
+        var dx = parseFloat(text.attr("dx"));
+        var tspan = text.text(null)
+            .append("tspan")
+            .attr("x", x)
+            .attr("y", y);
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node()
+                .getComputedTextLength() > width - x) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan")
+                    .attr("x", x)
+                    .attr("dy", lineHeight + "em")
+                    .attr("dx", dx + "em")
+                    .text(word);
+            }
         }
+    });
+}
     </script>
   </body>
 </html>
