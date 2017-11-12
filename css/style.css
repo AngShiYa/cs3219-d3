@@ -3,10 +3,6 @@ html, body {
   font-family: helvetica;
 }
 
-#charttitle {
-  text-align: center;
-}
-
 .charttitle {
   font-size: 26px;
   font-weight: bold;
