@@ -59,8 +59,8 @@
  </head>
   <body>
    <div id="filter">
-        Category: <input type="text" id="category"/></br>
         Measure: <input type="text" id="measure"/></br>
+        Category: <input type="text" id="category"/></br>
         Author: <input type="text" id="author"/></br>
         Venue: <input type="text" id="venue"/></br>
         Paper: <input type="text" id="paper"/></br>
@@ -85,16 +85,19 @@
  <script>
     function filterFunction() {
         d3.selectAll("svg").remove();
-        var category = document.getElementById("category").value;
+        d3.selectAll("#dataseries > *").remove();
         var measure = document.getElementById("measure").value;
+        var category = document.getElementById("category").value;
         var author = document.getElementById("author").value;
         var venue = document.getElementById("venue").value;
         var paper = document.getElementById("paper").value;
         var startYear = document.getElementById("startyear").value;
         var endYear = document.getElementById("endyear").value;
-        var url = "http://128.199.249.171/top?count=" + count
-            + "&category=" + category + "&measure=" + measure;
+        var url = "http://128.199.249.171/trend?measure=" + measure;
                 
+        if (category != "") {
+            url = url + "&category=" + category;
+        }
         if (author != "") {
             url = url + "&author=" + author;
         }
@@ -146,7 +149,7 @@
         var minX, maxX, minY, maxY;
 
         // get the data
-        d3.json("multiline.json", function(data) {
+        d3.json(url, function(data) {
             update(data);
 
             color.domain(data.map(function(d) { return d.series; }));
@@ -215,7 +218,7 @@
 
             // set the axes
             xAxis = d3.axisBottom(x).ticks(maxX - minX).tickFormat(d3.format("d"));
-            yAxis = d3.axisLeft(y).ticks(maxY - 0);
+            yAxis = d3.axisLeft(y).ticks(Math.min(10, maxY));
 
             var line = d3.line()
                 .x(function(d) { return x(d.year); })

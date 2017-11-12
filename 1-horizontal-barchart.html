@@ -80,8 +80,8 @@
   <body>
     <div id="filter">
         Count: <input type="text" id="count"/></br>
-        Category: <input type="text" id="category"/></br>
         Measure: <input type="text" id="measure"/></br>
+        Category: <input type="text" id="category"/></br>
         Author: <input type="text" id="author"/></br>
         Venue: <input type="text" id="venue"/></br>
         Paper: <input type="text" id="paper"/></br>
@@ -96,8 +96,8 @@
         function filterFunction() {
             d3.selectAll("svg").remove();
             var count = document.getElementById("count").value;
-            var category = document.getElementById("category").value;
             var measure = document.getElementById("measure").value;
+            var category = document.getElementById("category").value;
             var author = document.getElementById("author").value;
             var venue = document.getElementById("venue").value;
             var paper = document.getElementById("paper").value;
