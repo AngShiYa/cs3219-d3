@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title>Comparison</title>
-    <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
+    <script src="js/util.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
       #barchart {
         width: 960px;
@@ -53,10 +54,6 @@
           url = url + "&year=" + startYear + "-" + endYear;
         }
         drawChart(url, count, category, measure);
-      }
-    
-      function toFirstLetterUpperCase(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
       }
     
       function drawChart(url, count, category, measure) {
