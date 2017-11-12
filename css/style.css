@@ -51,35 +51,57 @@ html, body {
   fill: #fa8080;
 }
 
-  .checkbox {
-      position: relative;
-      float: left;
-      width: 20px;
-      height: 20px;
-      background: #ddd;
-      border-radius: 100%;
-  }
+.checkbox {
+  position: relative;
+  float: left;
+  width: 20px;
+  height: 20px;
+  background: #ddd;
+  border-radius: 100%;
+}
 
-  .checkbox label {
-      position: absolute;
-      display: block;
-      width: 16px;
-      height: 16px;
-      border-radius: 100%;
-      transition: all .3s ease;
-      cursor: pointer;
-      top: 2px;
-      left: 2px;
-      z-index: 1;
-  }
+.checkbox label {
+  position: absolute;
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 100%;
+  transition: all .3s ease;
+  cursor: pointer;
+  top: 2px;
+  left: 2px;
+  z-index: 1;
+}
 
-  .series {
-      margin-top: 5px;
-  }
+.series {
+  margin-top: 5px;
+}
 
-  .series text {
-      margin-left: 5px;
-  }
+.series text {
+  margin-left: 5px;
+}
+
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: 33px;
+  left: 0;
+  z-index: 999;
+}
+
+.dropdown-item {
+  white-space: nowrap;
+}
+
+.labeltag {
+  float: left;
+  width: 20%;
+  min-width: 100px;
+  max-width: 150px;
+}
 
 .label {
   fill: #2d2d2d;

@@ -2,34 +2,36 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Comparison</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Multiline Chart</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
     <script src="https://unpkg.com/vue"></script>
     <script src="https://cdn.rawgit.com/simplesmiler/vue-clickaway/2.1.0/dist/vue-clickaway.js"></script>
-    <script src="js/d3.v3.min.js"></script>
+    <script src="js/d3.v4.min.js"></script>
     <script src="js/d3.tip.js"></script>
-    <script src="js/util.js"></script>
-    <script src="js/barchart.js"></script>
+    <script src="js/linechart.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
-      #barchart {
-        width: 960px;
-        margin: auto;
+      #plotarea {
+        float: left;
       }
+
+      #dataseries {
+        margin-left: 10px;
+        height: 500px;
+      }
+
+      input[type=checkbox] {
+        visibility: hidden;
+      }
+
     </style>
   </head>
   <body>
     <section class="section">
       <div class="container is-fluid">
         <div id="filter" class="columns is-multiline">
-        
-        <div class="column">
-            <div class="tags has-addons" id="count-filter">
-              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by count" v-model="countValue">
-            </div>
-          </div>
           <div class="column">
             <div class="tags has-addons" id="measure-dropdown">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
@@ -53,7 +55,7 @@
             </div>
           </div>
           <div class="column">
-            <div class="tags has-addons" id="category-no-total-dropdown">
+            <div class="tags has-addons" id="category-dropdown">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
               <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
                 <div class="dropdown-trigger">
@@ -74,7 +76,7 @@
               </div>
             </div>
           </div>
-          <div class="column is-12">
+          <div class="column">
             <div class="tags has-addons" id="year-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
               <input class="button tag is-white is-medium" type="text" placeholder="start year" v-model="startYear">
@@ -103,25 +105,32 @@
         </div>
 
           <button class="button" onclick="filterFunction()">Submit</button>
-      
+        
       </div>
     </section>
     <section class="section">
       <div class="container is-fluid">
-      	<div id="barchart"></div>
+        <div id="chart">
+          <div id="plotarea"></div>
+          <div id="dataseries"></div>
+        </div>
       </div>
     </section>
+    
     <script src="js/vue-userinput.js"></script>
     <script>
       function filterFunction() {
         d3.selectAll("svg").remove();
+        d3.selectAll("#dataseries > *").remove();
         
-        var count = countFilter.countValue;
         var measure = measureDropdown.selectedMeasure;
-        var category = categoryNoTotalDropdown.selectedCategory;
-        var url = "http://128.199.249.171/top?count=" + count
-            + "&category=" + category + "&measure=" + measure;
-            
+        var url = "http://128.199.249.171/trend?measure=" + measure;
+
+        var category = categoryDropdown.selectedCategory;
+        if (category != "") {
+          url = url + "&category=" + category;
+        }
+        
         var author = authorFilter.authorNames;
         if (author != "") {
           url = url + "&author=" + author;
@@ -142,8 +151,9 @@
         if (startYear != "" && endYear != "") {
           url = url + "&year=" + startYear + "-" + endYear;
         }
-        drawBarChart(url, count, category, measure);
+        drawLineChart(url);
       }
-    </script>
+
+          </script>
   </body>
 </html>

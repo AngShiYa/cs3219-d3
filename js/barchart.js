@@ -1,4 +1,9 @@
 function drawBarChart(url, count, category, measure) {
+  if (count <= 0) {
+    alert("Count must be larger than 0");
+    return;
+  }
+  
   category = toFirstLetterUpperCase(category);
   measure = toFirstLetterUpperCase(measure);
   var margin = {top: 80, right: 25, bottom: 60, left: 250};
