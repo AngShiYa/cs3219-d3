@@ -148,7 +148,15 @@
 
             chart.call(tip);
     
-            d3.json(url, function(data) {
+            d3.json(url, function(error, data) {
+                if (error) {
+                    alert("Error parsing parameters. Please try again");
+                }
+                if (data.error != null) {
+                    alert(data.error);
+                    return;
+                }
+                
                 data = data.sort(function(x, y) {
                     return d3.ascending(x.count, y.count) ||
                     d3.descending(x.series, y.series);

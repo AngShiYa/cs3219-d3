@@ -69,20 +69,28 @@
             var width = 960, height = 550;
             var fill = d3.scale.category20();
             var url = "http://128.199.249.171/word?category=" + category + "&ignore=" + ignore;
-            d3.json(url, function(data) {
-            d3.layout.cloud()
-                .size([width, height])
-                .words(data)
-                .rotate(function() {
-                    return 0;
-                })
-                .font("Impact")
-                .text(function(d) { return d.word })
-                .fontSize(function(d) {
-                    return d.size;
-                })
-                .on("end", drawSkillCloud)
-                .start();
+            d3.json(url, function(error, data) {
+                if (error) {
+                    alert("Error parsing parameters. Please try again");
+                }
+                if (data.error != null) {
+                    alert(data.error);
+                    return;
+                }
+                
+                d3.layout.cloud()
+                    .size([width, height])
+                    .words(data)
+                    .rotate(function() {
+                        return 0;
+                    })
+                    .font("Impact")
+                    .text(function(d) { return d.word })
+                    .fontSize(function(d) {
+                        return d.size;
+                    })
+                    .on("end", drawSkillCloud)
+                    .start();
             });
 
             // apply D3.js drawing API

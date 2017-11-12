@@ -143,22 +143,28 @@
             var links, nodes;
             
             var url = "http://128.199.249.171/web?level=" + level + "&paper=" + paper;
-            d3.json(url, function(error, graph) {
-                if (error) throw error;
+            d3.json(url, function(error, data) {
+                if (error) {
+                    alert("Error parsing parameters. Please try again");
+                }
+                if (data.error != null) {
+                    alert(data.error);
+                    return;
+                }
 
                 // Scale the range of the data
-                var min = d3.min(graph.nodes, function(d) { if (d.year != 0) return d.year; });
-                var max = d3.max(graph.nodes, function(d) { return d.year; });
+                var min = d3.min(data.nodes, function(d) { if (d.year != 0) return d.year; });
+                var max = d3.max(data.nodes, function(d) { return d.year; });
             
                 // Process the data
-                var nodeById = d3.map(graph.nodes, function(d) { return d.id; });
-                graph.links.forEach(function(link) {
+                var nodeById = d3.map(data.nodes, function(d) { return d.id; });
+                data.links.forEach(function(link) {
                     link.source = nodeById.get(link.source);
                     link.target = nodeById.get(link.target);
                 });
         
-                links = graph.links;
-                nodes = graph.nodes;
+                links = data.links;
+                nodes = data.nodes;
       	
                 // slider
                 d3.select("#slider").append("input")
@@ -171,8 +177,8 @@
 
                 function update() {
                     selectedYear = document.getElementById("yearSlider").value;
-                    nodes = graph.nodes.filter(function(d) { return d.year <= selectedYear; });
-                    links = graph.links.filter(function(d) {
+                    nodes = data.nodes.filter(function(d) { return d.year <= selectedYear; });
+                    links = data.links.filter(function(d) {
                         return nodes.some(item => item.id == d.source.id) &&
                             nodes.some(item => item.id == d.target.id);
                     });
