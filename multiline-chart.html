@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
     <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.rawgit.com/simplesmiler/vue-clickaway/2.1.0/dist/vue-clickaway.js"></script>
     <script src="js/d3.v4.min.js"></script>
     <script src="js/d3.tip.js"></script>
     <style>
@@ -55,29 +56,109 @@
       .series text {
         margin-left: 5px;
       }
+
+      .dropdown-container {
+        position: relative;
+      }
+
+      .dropdown {
+        position: absolute;
+        top: 33px;
+        left: 0;
+        z-index: 999;
+      }
+
+      .dropdown-item {
+        white-space: nowrap;
+      }
+
+      .labeltag {
+        float: left;
+        width: 20%;
+        min-width: 100px;
+        max-width: 150px;
+      }
+
     </style>
   </head>
   <body>
     <section class="section">
       <div class="container is-fluid">
-        <div id="filter">
-          <div class="tags has-addons">
-            <span class="tag is-dark is-medium">Measure</span>
-
-              <button class="button tag is-light is-medium" type="button">
-                Toggle Dropdown
-              </button>
-
-            
+        <div id="filter" class="columns is-multiline">
+          <div class="column">
+            <div class="tags has-addons" id="measure-dropdown">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+                <div class="dropdown-trigger">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                    <span>{{ selectedMeasure }}</span>
+                    <span class="icon is-small">
+                      <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div v-show="toggle" class="dropdown">
+                  <div class="dropdown-content">
+                    <a class="dropdown-item" v-for="item in measures" v-on:click="changeMeasure(item.name)">
+                      <span>{{ item.name }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          Category: <input type="text" id="category"/></br>
-          Author: <input type="text" id="author"/></br>
-          Venue: <input type="text" id="venue"/></br>
-          Paper: <input type="text" id="paper"/></br>
-          Start Year: <input type="text" id="startyear"/></br>
-          End Year: <input type="text" id="endyear"/></br>
-          <button onclick="filterFunction()">Submit</button>
+          <div class="column">
+            <div class="tags has-addons" id="category-dropdown">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+                <div class="dropdown-trigger">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                    <span>{{ selectedCategory }}</span>
+                    <span class="icon is-small">
+                      <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div v-show="toggle" class="dropdown">
+                  <div class="dropdown-content">
+                    <a class="dropdown-item" v-for="item in categories" v-on:click="changeCategory(item.name)">
+                      <span>{{ item.name }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="tags has-addons" id="year-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium" type="text" placeholder="start year" v-model="startYear">
+              <span class="tag is-light is-medium">to</span>
+              <input class="button tag is-white is-medium" type="text" placeholder="end year" v-model="endYear">
+            </div>
+          </div>
+          <div class="column is-12">
+            <div class="tags has-addons" id="author-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by author" v-model="authorNames">
+            </div>
+          </div>
+          <div class="column is-12">
+            <div class="tags has-addons" id="venue-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by venues" v-model="venueNames">
+            </div>
+          </div>
+          <div class="column is-12">
+            <div class="tags has-addons" id="paper-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by papers" v-model="paperNames">
+            </div>
+          </div>
         </div>
+
+          <button class="button" onclick="filterFunction()">Submit</button>
+        
       </div>
     </section>
     <section class="section">
@@ -90,16 +171,106 @@
     </section>
     
     <script>
+      var measuredropdown = new Vue({
+        el: '#measure-dropdown',
+        mixins: [VueClickaway.mixin],
+        data: {
+          filterName: "Measure",
+          selectedMeasure: "paper",
+          measures: [
+            { name: "paper" },
+            { name: "author"},
+            { name: "venue"},
+            { name: "incitation"},
+            { name: "outcitation"}
+          ],
+          toggle: false
+        },
+         methods: {
+          toggledropdown: function() {
+            this.toggle = !this.toggle;
+          },
+          changeMeasure: function(measure) {
+            this.selectedMeasure = measure;
+            this.toggle = false;
+          },
+          clickaway: function() {
+            this.toggle = false;
+          }
+        }
+      })
+
+      var categorydropdown = new Vue({
+        el: '#category-dropdown',
+        mixins: [VueClickaway.mixin],
+        data: {
+          filterName: "Category",
+          selectedCategory: "total",
+          categories: [
+            { name: "total" },
+            { name: "paper" },
+            { name: "author"},
+            { name: "venue"}
+          ],
+          toggle: false
+        },
+         methods: {
+          toggledropdown: function() {
+            this.toggle = !this.toggle;
+          },
+          changeCategory: function(category) {
+            this.selectedCategory = category;
+            this.toggle = false;
+          },
+          clickaway: function() {
+            this.toggle = false;
+          }
+        }
+      })
+
+      var yearFilter = new Vue({
+        el: '#year-filter',
+        data: {
+          filterName: "Year",
+          startYear: "",
+          endYear:""
+        }
+      })
+
+      var authorFilter = new Vue({
+        el: '#author-filter',
+        data: {
+          filterName: "Author",
+          authorNames: ""
+        }
+      })
+
+      var venueFilter = new Vue({
+        el: '#venue-filter',
+        data: {
+          filterName: "Venue",
+          venueNames: ""
+        }
+      })
+
+      var paperFilter = new Vue({
+        el: '#paper-filter',
+        data: {
+          filterName: "Paper",
+          paperNames: ""
+        }
+      })
+
       function filterFunction() {
         d3.selectAll("svg").remove();
         d3.selectAll("#dataseries > *").remove();
-        var measure = document.getElementById("measure").value;
-        var category = document.getElementById("category").value;
-        var author = document.getElementById("author").value;
-        var venue = document.getElementById("venue").value;
-        var paper = document.getElementById("paper").value;
-        var startYear = document.getElementById("startyear").value;
-        var endYear = document.getElementById("endyear").value;
+        var measure = measuredropdown.selectedMeasure;
+        var category = categorydropdown.selectedCategory;
+        var author = authorFilter.authorNames;
+        var venue = venueFilter.venueNames;
+        var paper = paperFilter.paperNames;
+        var startYear = yearFilter.startYear;
+        var endYear = yearFilter.endYear;
         var url = "http://128.199.249.171/trend?measure=" + measure;
                 
         if (category != "") {
@@ -157,12 +328,15 @@
 
         // get the data
         d3.json(url, function(error, data) {
-<<<<<<< HEAD
           if (error) {
             alert("Error parsing parameters. Please try again");
           }
           if (data.error != null) {
             alert(data.error);
+            return;
+          }
+          if (data == "") {
+            alert("No data to display");
             return;
           }
 
@@ -189,43 +363,6 @@
 
           var checkbox = legend.append("div")
             .attr("class", "checkbox")
-=======
-            if (error) {
-                alert("Error parsing parameters. Please try again");
-            }
-            if (data.error != null) {
-                alert(data.error);
-                return;
-            }
-            if(data == "") {
-                alert("No data to display");
-                return;
-            }
-
-            update(data);
-
-            color.domain(data.map(function(d) { return d.series; }));
-
-            // Add x axis
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-            // Add y axis
-            svg.append("g")
-                .attr("class", "y axis")
-                .call(yAxis);
-
-            var legend = d3.select("#dataseries").selectAll(".series")
-                .data(data)
-                .enter()
-                .append("div")
-                .attr("class", "series")
-
-            var checkbox = legend.append("div")
-                .attr("class", "checkbox")
->>>>>>> 6a8b2eeaf1461356407b7f5fb6b825c637907d42
              
           checkbox.append("input")
             .attr("class", "selection")
