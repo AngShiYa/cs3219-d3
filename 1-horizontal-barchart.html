@@ -19,7 +19,7 @@
         }
 
 	    .axis {
-	    	font-size: 12px;
+	    	font-size: 11px;
 	    }
 
 	    .axis path, .axis line {
@@ -128,9 +128,9 @@
         function drawChart(url, count, category, measure) {
             category = toFirstLetterUpperCase(category);
             measure = toFirstLetterUpperCase(measure);
-            var margin = {top: 80, right: 25, bottom: 60, left: 200},
+            var margin = {top: 80, right: 25, bottom: 60, left: 250},
                 width = 960 - margin.left - margin.right,
-                height = (count * 80) - margin.top - margin.bottom;
+                height = 150 + (count * 70) - margin.top - margin.bottom;
 
             var chart = d3.select("#barchart")
                 .append("svg")
@@ -154,6 +154,9 @@
                     d3.descending(x.series, y.series);
                 })
 
+                var max = d3.max(data, function(d) { return d.count; });
+                var ticks = Math.min(10, max);
+
                 var x = d3.scale.linear()
                     .range([0, width])
                     .domain([0, d3.max(data, function(d) { return d.count; })]);
@@ -163,7 +166,7 @@
                     .domain(data.map(function(d) { return d.series; }));
 
                 var xAxis = d3.svg.axis()
-                    .ticks(d3.max(data, function(d) { return d.count; }))
+                    .ticks(ticks)
                     .tickFormat(d3.format(".0f"))
                     .scale(x)
                     .orient("bottom");
@@ -215,12 +218,12 @@
                     .attr("transform", "translate(-10, -20)")
                     .attr("height", "80px")
                     .attr("dominant-baseline", "text-before-edge")
-                    .call(wrap, y.rangeBand() + 70);
+                    .call(wrap, y.rangeBand() + 110);
 
                 // Add y axis label
                 chart.append("text")
                     .attr("text-anchor", "middle")
-                    .attr("transform", "translate("+ (0 - (margin.left/2 + 50)) + "," + (height/2)  +")rotate(-90)")
+                    .attr("transform", "translate("+ (0 - (margin.left/2 + 100)) + "," + (height/2)  +")rotate(-90)")
                     .attr("class", "label")
                     .text(category + "s");
 
