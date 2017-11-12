@@ -157,6 +157,10 @@
                 alert(data.error);
                 return;
             }
+            if(data == "") {
+                alert("No data to display");
+                return;
+            }
 
             update(data);
 

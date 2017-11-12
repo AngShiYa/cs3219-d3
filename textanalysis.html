@@ -1,0 +1,140 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Word Frequency of Paper Titles</title>
+    <style>
+      body {
+        font-family: Helvetica;
+      }
+
+      #charttitle {
+        text-align: center;
+        margin-top: 30;
+      }
+
+      #cloud {
+        width: 960px;
+        margin: 50 auto;
+      }
+
+      text:hover { fill: #000 !important; }
+
+      .d3-tip {
+            line-height: 1;
+            font: 14px sans-serif;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.8);
+            color: rgb(185, 185, 185);
+            border-radius: 2px;
+        }
+
+        /* Creates a small triangle extender for the tooltip */
+        .d3-tip:after {
+            box-sizing: border-box;
+            display: inline;
+            font-size: 10px;
+            width: 100%;
+            line-height: 1;
+            color: rgba(0, 0, 0, 0.8);
+            content: "\25BC";
+            position: absolute;
+            text-align: center;
+        }
+
+        .d3-tip.n:after {
+            margin: -1px 0 0 0;
+            top: 100%;
+            left: 0;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="charttitle"><h2>Word Frequency of Paper Titles</h2></div>
+    <div id="filter">
+      Category: <input type="text" id="category"/></br>
+      Ignore words: <input type="text" id="ignore"/></br>
+      <button onclick="filterFunction()">Submit</button>
+    </div>
+    <div id="cloud"></div>
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/d3.tip.js"></script>
+    <script src="js/cloud.js"></script>
+    <script>
+      function filterFunction() {
+        d3.selectAll("svg").remove();
+        drawChart(document.getElementById("category").value, document.getElementById("ignore").value)
+      }
+    
+      function drawChart(category, ignore) {
+        var width = 960, height = 600;
+        var fill = d3.scale.category20();
+        var url = "http://128.199.249.171/word?category=" + category + "&ignore=" + ignore;
+        d3.json(url, function(error, data) {
+          if (error) {
+            alert("Error parsing parameters. Please try again");
+          }
+          if (data.error != null) {
+            alert(data.error);
+            return;
+          }
+          if(data == "") {
+            alert("No data to display");
+            return;
+          }
+                
+          d3.layout.cloud()
+            .size([width, height])
+            .words(data)
+            .rotate(function() {
+              return 0;
+            })
+            .font("Impact")
+            .text(function(d) { return d.word })
+            .fontSize(function(d) {
+              return d.size;
+            })
+            .on("end", drawSkillCloud)
+            .start();
+        });
+
+        // apply D3.js drawing API
+        function drawSkillCloud(words) {
+          var cloud = d3.select("#cloud").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + ~~(width / 2) + "," + ~~(height / 2) + ")")
+
+          var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-5, 0])
+            .html(function(d) {
+              return "<div><span>Frequency:</span> <span style='color:white'>" + d.count + "</span></div>";
+            })
+
+            cloud.call(tip);
+
+            cloud.selectAll("text")
+              .data(words)
+              .enter().append("text")
+              .on("mouseover", tip.show)
+              .on("mouseout", tip.hide)
+              .style("font-size", function(d) {
+                return d.size + "px";
+              })
+              .style("font-family", "Impact")
+              .style("fill", function(d, i) {
+                return fill(i);
+              })
+              .attr("text-anchor", "middle")
+              .attr("transform", function(d) {
+                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+              })
+              .text(function(d) {
+                return d.word;
+              });
+        }
+      }
+    </script>
+  </body>
+</html>
