@@ -2,7 +2,11 @@
   <head>
     <meta charset="utf-8">
     <title>Text Analysis</title>
-    <link rel = "stylesheet" type = "text/css" href = "/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script src="js/d3.v3.min.js"></script>
+    <script src="js/d3.tip.js"></script>
+    <script src="js/cloud.js"></script>
+    <script src="js/wordcloud.js"></script>
     <style>
       #cloud {
         width: 960px;
@@ -19,84 +23,14 @@
       <button onclick="filterFunction()">Submit</button>
     </div>
     <div id="cloud"></div>
-    <script src="js/d3.v3.min.js"></script>
-    <script src="js/d3.tip.js"></script>
-    <script src="js/cloud.js"></script>
     <script>
       function filterFunction() {
         d3.selectAll("svg").remove();
-        drawChart(document.getElementById("category").value, document.getElementById("ignore").value)
-      }
-    
-      function drawChart(category, ignore) {
-        var width = 960, height = 600;
-        var fill = d3.scale.category20();
+        
+        var category = document.getElementById("category").value;
+        var ignore = document.getElementById("ignore").value;
         var url = "http://128.199.249.171/word?category=" + category + "&ignore=" + ignore;
-        d3.json(url, function(error, data) {
-          if (error) {
-            alert("Error parsing parameters. Please try again");
-          }
-          if (data.error != null) {
-            alert(data.error);
-            return;
-          }
-          if(data == "") {
-            alert("No data to display");
-            return;
-          }
-                
-          d3.layout.cloud()
-            .size([width, height])
-            .words(data)
-            .rotate(function() {
-              return 0;
-            })
-            .font("Impact")
-            .text(function(d) { return d.word })
-            .fontSize(function(d) {
-              return d.size;
-            })
-            .on("end", drawCloud)
-            .start();
-        });
-
-        // apply D3.js drawing API
-        function drawCloud(words) {
-          var cloud = d3.select("#cloud").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(" + ~~(width / 2) + "," + ~~(height / 2) + ")")
-
-          var tip = d3.tip()
-            .attr('class', 'd3-tip')
-            .offset([-5, 0])
-            .html(function(d) {
-              return "<div><span>Frequency:</span> <span style='color:white'>" + d.count + "</span></div>";
-            })
-
-            cloud.call(tip);
-
-            cloud.selectAll("text")
-              .data(words)
-              .enter().append("text")
-              .on("mouseover", tip.show)
-              .on("mouseout", tip.hide)
-              .style("font-size", function(d) {
-                return d.size + "px";
-              })
-              .style("font-family", "Impact")
-              .style("fill", function(d, i) {
-                return fill(i);
-              })
-              .attr("text-anchor", "middle")
-              .attr("transform", function(d) {
-                return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-              })
-              .text(function(d) {
-                return d.word;
-              });
-        }
+        drawWordCloud(url)
       }
     </script>
   </body>
