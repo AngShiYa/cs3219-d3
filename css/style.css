@@ -107,23 +107,23 @@ html, body {
   width: 20%;
 }
 
-.inputdropdown {
+.input-dropdown {
   width: 100%;
 }
 
-.inputyear {
+.input-year {
   width: 35%;
 }
 
-.inputconnector {
+.input-connector {
   width: 10%;
 }
 
-.inputtext {
+.input-text, .input-single-year {
   width: 80%;
 }
 
-#submitButton {
+#submit-button {
   width: 100%;
 }
 

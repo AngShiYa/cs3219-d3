@@ -24,12 +24,12 @@
     <section class="section">
       <div class="container is-fluid">
         <div id="filter" class="columns is-multiline">
-          <div class="column">
+          <div class="column is-4">
             <div class="tags has-addons" id="category-no-total-dropdown">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+              <div v-on-clickaway="clickaway"  class="dropdown-container">
                 <div class="dropdown-trigger">
-                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium input-dropdown" type="button">
                     <span>{{ selectedCategory }}</span>
                     <span class="icon is-small">
                       <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -49,13 +49,15 @@
           <div class="column">
             <div class="tags has-addons" id="ignore-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtag" type="text" placeholder="words to ignore" v-model="stopWords">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="words to ignore" v-model="stopWords">
             </div>
           </div>
         </div>
-
-        <button class="button" onclick="filterFunction()">Submit</button>
-        
+        <div class="columns">
+          <div class="column is-2">
+            <a id="submit-button" class="button" onclick="filterFunction()">Submit</a> 
+          </div>
+        </div>
       </div>
     </section>
     <section class="section">

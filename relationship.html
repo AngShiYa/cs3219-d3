@@ -30,25 +30,27 @@
     </style>
   </head>
   <body>
-  <section class="section">
+    <section class="section">
       <div class="container is-fluid">
         <div id="filter" class="columns is-multiline">
-          <div class="column">
+          <div class="column is-4">
             <div class="tags has-addons" id="level-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtag" type="text" placeholder="depth of network" v-model="level">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="depth of network" v-model="level">
             </div>
           </div>
           <div class="column">
             <div class="tags has-addons" id="paper-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtag" type="text" placeholder="center of network" v-model="paperNames">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="center of network" v-model="paperNames">
             </div>
           </div>
         </div>
-
-        <button class="button" onclick="filterFunction()">Submit</button>
-        
+        <div class="columns">
+          <div class="column is-2">
+            <a id="submit-button" class="button" onclick="filterFunction()">Submit</a> 
+          </div>
+        </div>     
       </div>
     </section>
     <section class="section">

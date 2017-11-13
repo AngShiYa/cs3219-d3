@@ -25,12 +25,12 @@
     <section class="section">
       <div class="container is-fluid">
         <div id="filter" class="columns is-multiline">
-          <div class="column">
+          <div class="column is-4">
             <div class="tags has-addons" id="measure-dropdown">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+              <div v-on-clickaway="clickaway"  class="dropdown-container">
                 <div class="dropdown-trigger">
-                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium input-dropdown" type="button">
                     <span>{{ selectedMeasure }}</span>
                     <span class="icon is-small">
                       <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -47,12 +47,12 @@
               </div>
             </div>
           </div>
-          <div class="column">
+          <div class="column is-4">
             <div class="tags has-addons" id="category-no-total-dropdown">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+              <div v-on-clickaway="clickaway"  class="dropdown-container">
                 <div class="dropdown-trigger">
-                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium input-dropdown" type="button">
                     <span>{{ selectedCategory }}</span>
                     <span class="icon is-small">
                       <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -69,34 +69,34 @@
               </div>
             </div>
           </div>
-          <div class="column">
+          <div class="column is-4">
             <div class="tags has-addons" id="single-year-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium" type="text" placeholder="year" v-model="year">
+              <input class="button tag is-white is-medium input-single-year" type="text" placeholder="year" v-model="year">
             </div>
           </div>
-          <div class="column is-12">
+          <div class="column is-4">
             <div class="tags has-addons" id="author-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by author" v-model="authorNames">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="filter by author" v-model="authorNames">
             </div>
           </div>
-          <div class="column is-12">
+          <div class="column is-4">
             <div class="tags has-addons" id="venue-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by venues" v-model="venueNames">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="filter by venues" v-model="venueNames">
             </div>
           </div>
-          <div class="column is-12">
+          <div class="column is-4">
             <div class="tags has-addons" id="paper-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by papers" v-model="paperNames">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="filter by papers" v-model="paperNames">
             </div>
           </div>
+          <div class="column is-2">
+            <a id="submit-button" class="button" onclick="filterFunction()">Submit</a> 
+          </div>
         </div>
-
-          <button class="button" onclick="filterFunction()">Submit</button>
-        
       </div>
     </section>
     <section class="section">

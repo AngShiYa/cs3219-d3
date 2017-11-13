@@ -36,7 +36,7 @@
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
               <div v-on-clickaway="clickaway"  class="dropdown-container">
                 <div class="dropdown-trigger">
-                  <button v-on:click="toggledropdown" class="button tag is-white is-medium inputdropdown" type="button">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium input-dropdown" type="button">
                     <span>{{ selectedMeasure }}</span>
                     <span class="icon is-small">
                       <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -58,7 +58,7 @@
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
               <div v-on-clickaway="clickaway"  class="dropdown-container">
                 <div class="dropdown-trigger">
-                  <button v-on:click="toggledropdown" class="button tag is-white is-medium inputdropdown" type="button">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium input-dropdown" type="button">
                     <span>{{ selectedCategory }}</span>
                     <span class="icon is-small">
                       <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -78,31 +78,31 @@
           <div class="column is-4">
             <div class="tags has-addons" id="year-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputyear" type="text" placeholder="start" v-model="startYear">
-              <span class="tag is-light is-medium inputconnector">to</span>
-              <input class="button tag is-white is-medium inputyear" type="text" placeholder="end" v-model="endYear">
+              <input class="button tag is-white is-medium input-year" type="text" placeholder="start" v-model="startYear">
+              <span class="tag is-light is-medium input-connector">to</span>
+              <input class="button tag is-white is-medium input-year" type="text" placeholder="end" v-model="endYear">
             </div>
           </div>
           <div class="column is-4">
             <div class="tags has-addons" id="author-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtext" type="text" placeholder="filter by author" v-model="authorNames">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="filter by author" v-model="authorNames">
             </div>
           </div>
           <div class="column is-4">
             <div class="tags has-addons" id="venue-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtext" type="text" placeholder="filter by venues" v-model="venueNames">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="filter by venues" v-model="venueNames">
             </div>
           </div>
           <div class="column is-4">
             <div class="tags has-addons" id="paper-filter">
               <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
-              <input class="button tag is-white is-medium inputtext" type="text" placeholder="filter by papers" v-model="paperNames">
+              <input class="button tag is-white is-medium input-text" type="text" placeholder="filter by papers" v-model="paperNames">
             </div>
           </div>
           <div class="column is-2">
-            <a id="submitButton" class="button" onclick="filterFunction()">Submit</a> 
+            <a id="submit-button" class="button" onclick="filterFunction()">Submit</a> 
           </div>
         </div>
       </div>
