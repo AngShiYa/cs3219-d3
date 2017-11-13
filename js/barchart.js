@@ -1,14 +1,23 @@
-function drawBarChart(url, count, category, measure) {
-  if (count <= 0) {
-    alert("Count must be larger than 0");
-    return;
-  }
-  
+function drawBarChart(url, category, measure) {
   category = toFirstLetterUpperCase(category);
   measure = toFirstLetterUpperCase(measure);
-  var margin = {top: 80, right: 25, bottom: 60, left: 250};
+    
+    d3.json(url, function(error, data) {
+      if (error) {
+        alert("Error parsing parameters. Please try again");
+      }
+      if (data.error != null) {
+        alert(data.error);
+        return;
+      }
+      if(data == "") {
+        alert("No data to display");
+        return;
+      }
+      
+        var margin = {top: 80, right: 25, bottom: 60, left: 250};
   var width = 960 - margin.left - margin.right;
-  var height = 150 + (count * 70) - margin.top - margin.bottom;
+  var height = 150 + (data.length * 70) - margin.top - margin.bottom;
 
   var chart = d3.select("#barchart")
     .append("svg")
@@ -25,19 +34,6 @@ function drawBarChart(url, count, category, measure) {
     })
 
     chart.call(tip);
-    
-    d3.json(url, function(error, data) {
-      if (error) {
-        alert("Error parsing parameters. Please try again");
-      }
-      if (data.error != null) {
-        alert(data.error);
-        return;
-      }
-      if(data == "") {
-        alert("No data to display");
-        return;
-      }
     
       data = data.sort(function(x, y) {
         return d3.ascending(x.count, y.count) ||
@@ -122,7 +118,7 @@ function drawBarChart(url, count, category, measure) {
         .attr("text-anchor", "middle")
         .attr("transform", "translate(" + width/2 + ", " + (0 - (margin.top/2) + 10) + ")")
         .attr("class", "charttitle")
-        .text("Top " + count + " " + category + "s by " + measure);
+        .text("Top " + data.length + " " + category + "s by " + measure);
         
     });
   }
