@@ -8,20 +8,9 @@ function drawForceGraph(url) {
     .attr("width", width)
     .attr("height", height);
 
-  //add encompassing group for the zoom
+  //add encompassing group
   var g = svg.append("g")
     .attr("class", "everything");
-
-  //add zoom capabilities
-  var zoom_handler = d3.zoom()
-    .on("zoom", zoom_actions);
-
-  zoom_handler(svg);
-
-  //Zoom functions
-  function zoom_actions(){
-    g.attr("transform", d3.event.transform)
-  }
 
   var tip = d3.tip()
     .attr('class', 'd3-tip')
@@ -65,7 +54,7 @@ function drawForceGraph(url) {
     nodes = data.nodes;
       	
     // slider
-    d3.select("#slider").append("input")
+    var yearSlider = d3.select("#slider").append("input")
       .attr("type", "range")
       .attr("min", min)
       .attr("max", max)
@@ -73,8 +62,14 @@ function drawForceGraph(url) {
       .attr("id", "yearSlider")
       .on("input", update);
 
+    var sliderDisplay = d3.select("#slider").append("label")
+      .attr("fill", "black")
+      .attr("id", "sliderDisplay")
+      .html("Year: " + max);
+
     function update() {
       selectedYear = document.getElementById("yearSlider").value;
+      sliderDisplay.html("Year: " + selectedYear);
       nodes = data.nodes.filter(function(d) { return d.year <= selectedYear; });
       links = data.links.filter(function(d) {
         return nodes.some(item => item.id == d.source.id) &&
@@ -89,28 +84,30 @@ function drawForceGraph(url) {
       .attr("width", 960)
       .attr("height", 50);
     
+    var numGroups = d3.max(data.nodes.map(function(d) { return d.group; }));
     var legend = svg2.selectAll(".legend")
       .data(color.domain())
       .enter().append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(" +(i * 150) + ", 0)"; });
-      
+      .attr("transform", function(d, i) { return "translate(" +(i * 100) + ", 0)"; });
+    
+    var start = Math.max(0, (960 - (100 * numGroups))/2);
     legend.append("rect")
-      .attr("x", 265)
+      .attr("x", start)
       .attr("y", 20)
       .attr("width", 18)
       .attr("height", 18)
       .style("fill", color);
       
     legend.append("path")
-      .attr("d", "M140 30 l120 0 l0 0 l-10 -5 m10 5 l-10 5")
+      .attr("d", "M" + (start-80) + " 30 l80 0 l0 0 l-10 -5 m10 5 l-10 5")
       .style("fill", "none")
       .style("stroke", function(d) {
         if (d == 1) return "none"; else return "#a3a3a3";
       });
       
     legend.append("text").attr("x", function(d) {
-      if (d == 1) return 260; else return 225; })
+      if (d == 1) return start - 5; else return start - 20; })
         .attr("y", function(d) {
       if (d == 1) return 27; else return 15; })
         .attr("dy", ".35em")

@@ -13,19 +13,59 @@
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
       #forcegraph {
-        width: 960px;
+        width: 800px;
         margin: auto;
         border-color: #a5a5a5;
       }
 
       #legendarea {
-        width: 960px;
+        width: 800px;
         margin: auto;
       }
 
       .legend text {
         font-size: 13px;
         fill: #3c3c3c;
+      }
+
+      #yearSlider {
+        -webkit-appearance: none;
+        outline: none;
+        border-radius: 5px;
+        background: #d7dcdf;
+        height: 10px;
+        width: 80%;
+        margin-left: 5%;
+        margin-top; 0;
+      }
+
+      #yearSlider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #2c3e50;
+        cursor: pointer;
+        -webkit-transition: background .15s ease-in-out;
+        transition: background .15s ease-in-out;
+      }
+
+      #yearSlider::-webkit-slider-thumb:hover {
+        background: #1abc9c;
+      }
+
+      #sliderDisplay {
+        display: inline-block;
+        position: relative;
+        width: 10%;
+        color: #fff;
+        line-height: 20px;
+        text-align: center;
+        border-radius: 3px;
+        background: #2c3e50;
+        padding: 5px 10px;
+        margin-left: 8px;
       }
     </style>
   </head>
@@ -53,13 +93,11 @@
         </div>     
       </div>
     </section>
-    <section class="section">
-      <div id="chartarea">
-        <div id="slider"></div>
-        <div id="forcegraph"></div>
-        <div id="legendarea"></div>
-      </div>
-    </section>
+    <div id="chartarea">
+      <div id="slider"></div>
+      <div id="forcegraph"></div>
+      <div id="legendarea"></div>
+    </div>
     
     <script src="js/vue-userinput.js"></script>
     <script>
