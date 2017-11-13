@@ -1,6 +1,7 @@
 function drawPieChart(url, category, measure, year) {
   category = toFirstLetterUpperCase(category);
   measure = toFirstLetterUpperCase(measure);
+  if (year == "") year = "All Years";
   
   var width = 960,
     height = 500,
