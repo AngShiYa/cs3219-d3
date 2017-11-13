@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pie Chart</title>
+    <title>Composition</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
     <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.rawgit.com/simplesmiler/vue-clickaway/2.1.0/dist/vue-clickaway.js"></script>
     <script src="js/d3.v4.min.js"></script>
     <script src="js/util.js"></script>
     <script src="js/piechart.js"></script>
@@ -21,44 +22,120 @@
     </style>
   </head>
   <body>
-    <div id="filter">
-      Measure: <input type="text" id="measure"/></br>
-      Category: <input type="text" id="category"/></br>
-      Author: <input type="text" id="author"/></br>
-      Venue: <input type="text" id="venue"/></br>
-      Paper: <input type="text" id="paper"/></br>
-      Year: <input type="text" id="year"/></br>
-      <button onclick="filterFunction()">Submit</button>
-    </div>
-	  <div id="chart"></div>
+    <section class="section">
+      <div class="container is-fluid">
+        <div id="filter" class="columns is-multiline">
+          <div class="column">
+            <div class="tags has-addons" id="measure-dropdown">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+                <div class="dropdown-trigger">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                    <span>{{ selectedMeasure }}</span>
+                    <span class="icon is-small">
+                      <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div v-show="toggle" class="dropdown">
+                  <div class="dropdown-content">
+                    <a class="dropdown-item" v-for="item in measures" v-on:click="changeMeasure(item.name)">
+                      <span>{{ item.name }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="tags has-addons" id="category-no-total-dropdown">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+                <div class="dropdown-trigger">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                    <span>{{ selectedCategory }}</span>
+                    <span class="icon is-small">
+                      <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div v-show="toggle" class="dropdown">
+                  <div class="dropdown-content">
+                    <a class="dropdown-item" v-for="item in categories" v-on:click="changeCategory(item.name)">
+                      <span>{{ item.name }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="tags has-addons" id="single-year-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium" type="text" placeholder="year" v-model="year">
+            </div>
+          </div>
+          <div class="column is-12">
+            <div class="tags has-addons" id="author-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by author" v-model="authorNames">
+            </div>
+          </div>
+          <div class="column is-12">
+            <div class="tags has-addons" id="venue-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by venues" v-model="venueNames">
+            </div>
+          </div>
+          <div class="column is-12">
+            <div class="tags has-addons" id="paper-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="filter by papers" v-model="paperNames">
+            </div>
+          </div>
+        </div>
+
+          <button class="button" onclick="filterFunction()">Submit</button>
+        
+      </div>
+    </section>
+    <section class="section">
+      <div class="container is-fluid">
+        <div id="chart">
+          <div id="chart"></div>
+        </div>
+      </div>
+    </section>
+    
+    <script src="js/vue-userinput.js"></script>
     <script>
       function filterFunction() {
         d3.selectAll("svg").remove();
         
-        var measure = document.getElementById("measure").value;
+        var measure = measureDropdown.selectedMeasure;
         var url = "http://128.199.249.171/trend?measure=" + measure;
         
-        var category = document.getElementById("category").value;
+        var category = categoryNoTotalDropdown.selectedCategory;
         if (category != "") {
           url = url + "&category=" + category;
         }
         
-        var author = document.getElementById("author").value;
+        var author = authorFilter.authorNames;
         if (author != "") {
           url = url + "&author=" + author;
         }
         
-        var venue = document.getElementById("venue").value;
+        var venue = venueFilter.venueNames;
         if (venue != "") {
           url = url + "&venue=" + venue;
         }
         
-        var paper = document.getElementById("paper").value;
+        var paper = paperFilter.paperNames;
         if (paper != "") {
           url = url + "&paper=" + paper;
         }
         
-        var year = document.getElementById("year").value;
+        var year = singleYearFilter.year;
         if (year != "") {
           url = url + "&year=" + year + "-" + year;
         }

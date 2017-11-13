@@ -3,6 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>Relationship</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.rawgit.com/simplesmiler/vue-clickaway/2.1.0/dist/vue-clickaway.js"></script>
     <script src="js/d3.v4.min.js"></script>
     <script src="js/d3.tip.js"></script>
     <script src="js/forcegraph.js"></script>
@@ -26,25 +30,43 @@
     </style>
   </head>
   <body>
-  	<div id="chartarea">
-	  	<div id="charttitle">
-	  	</div>
-        <div id="filter">
-            Level: <input type="text" id="level"/></br>
-            Paper: <input type="text" id="paper"/></br>
-            <button onclick="filterFunction()">Submit</button>
+  <section class="section">
+      <div class="container is-fluid">
+        <div id="filter" class="columns is-multiline">
+          <div class="column">
+            <div class="tags has-addons" id="level-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="depth of network" v-model="level">
+            </div>
+          </div>
+          <div class="column">
+            <div class="tags has-addons" id="paper-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="center of network" v-model="paperNames">
+            </div>
+          </div>
         </div>
-	  	<div id="slider"></div>
-	    <div id="forcegraph"></div>
-	    <div id="legendarea"></div>
-	  </div>
+
+        <button class="button" onclick="filterFunction()">Submit</button>
+        
+      </div>
+    </section>
+    <section class="section">
+      <div id="chartarea">
+        <div id="slider"></div>
+        <div id="forcegraph"></div>
+        <div id="legendarea"></div>
+      </div>
+    </section>
+    
+    <script src="js/vue-userinput.js"></script>
     <script>
         function filterFunction() {
             d3.selectAll("svg").remove();
             d3.selectAll("#slider > *").remove();
             
-            var paper = document.getElementById("paper").value;
-            var level = document.getElementById("level").value;
+            var paper = paperFilter.paperNames;
+            var level = levelFilter.level;
             if (level < 1) {
               alert("Level must be positive number");
               return;

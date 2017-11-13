@@ -2,11 +2,15 @@
   <head>
     <meta charset="utf-8">
     <title>Text Analysis</title>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.rawgit.com/simplesmiler/vue-clickaway/2.1.0/dist/vue-clickaway.js"></script>
     <script src="js/d3.v3.min.js"></script>
     <script src="js/d3.tip.js"></script>
     <script src="js/cloud.js"></script>
     <script src="js/wordcloud.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
       #cloud {
         width: 960px;
@@ -17,18 +21,54 @@
     </style>
   </head>
   <body>
-    <div id="filter">
-      Category: <input type="text" id="category"/></br>
-      Ignore words: <input type="text" id="ignore"/></br>
-      <button onclick="filterFunction()">Submit</button>
-    </div>
-    <div id="cloud"></div>
+    <section class="section">
+      <div class="container is-fluid">
+        <div id="filter" class="columns is-multiline">
+          <div class="column">
+            <div class="tags has-addons" id="category-no-total-dropdown">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <div v-on-clickaway="clickaway"  class="dropdown-container inputtag">
+                <div class="dropdown-trigger">
+                  <button v-on:click="toggledropdown" class="button tag is-white is-medium" type="button">
+                    <span>{{ selectedCategory }}</span>
+                    <span class="icon is-small">
+                      <i class="fa fa-angle-down" aria-hidden="true"></i>
+                    </span>
+                  </button>
+                </div>
+                <div v-show="toggle" class="dropdown">
+                  <div class="dropdown-content">
+                    <a class="dropdown-item" v-for="item in categories" v-on:click="changeCategory(item.name)">
+                      <span>{{ item.name }}</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="tags has-addons" id="ignore-filter">
+              <span class="tag is-dark is-medium labeltag">{{ filterName }}</span>
+              <input class="button tag is-white is-medium inputtag" type="text" placeholder="words to ignore" v-model="stopWords">
+            </div>
+          </div>
+        </div>
+
+        <button class="button" onclick="filterFunction()">Submit</button>
+        
+      </div>
+    </section>
+    <section class="section">
+      <div id="cloud"></div>
+    </section>
+    
+    <script src="js/vue-userinput.js"></script>
     <script>
       function filterFunction() {
         d3.selectAll("svg").remove();
         
-        var category = document.getElementById("category").value;
-        var ignore = document.getElementById("ignore").value;
+        var category = categoryNoTotalDropdown.selectedCategory;
+        var ignore = ignoreFilter.stopWords;
         var url = "http://128.199.249.171/word?category=" + category + "&ignore=" + ignore;
         drawWordCloud(url)
       }
