@@ -1,4 +1,4 @@
-function drawBarChart(url, category, measure) {
+function drawBarChart(url, count, category, measure) {
   if (count <= 0) {
     alert("Count must be larger than 0");
     return;
