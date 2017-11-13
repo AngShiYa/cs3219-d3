@@ -13,6 +13,10 @@
     <script src="js/linechart.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
+      #chart {
+        width: 1120px;
+        margin: auto;
+      }
       #plotarea {
         float: left;
       }
@@ -107,14 +111,12 @@
         </div>
       </div>
     </section>
-    <section class="section">
-      <div class="container is-fluid">
-        <div id="chart">
-          <div id="plotarea"></div>
-          <div id="dataseries"></div>
-        </div>
+    <div class="container is-fluid">
+      <div id="chart">
+        <div id="plotarea"></div>
+        <div id="dataseries"></div>
       </div>
-    </section>
+    </div>
     
     <script src="js/vue-userinput.js"></script>
     <script>

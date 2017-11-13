@@ -13,6 +13,11 @@
     <script src="js/piechart.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
     <style>
+      #chart {
+        width: 800px;
+        margin: auto;
+      }
+      
       polyline {
         opacity: .3;
         stroke: black;
@@ -99,13 +104,9 @@
         </div>
       </div>
     </section>
-    <section class="section">
-      <div class="container is-fluid">
-        <div id="chart">
-          <div id="chart"></div>
-        </div>
-      </div>
-    </section>
+    <div class="container is-fluid">
+      <div id="chart"></div>
+    </div>
     
     <script src="js/vue-userinput.js"></script>
     <script>

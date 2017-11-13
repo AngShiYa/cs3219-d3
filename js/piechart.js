@@ -3,7 +3,7 @@ function drawPieChart(url, category, measure, year) {
   measure = toFirstLetterUpperCase(measure);
   if (year == "") year = "All Years";
   
-  var width = 960,
+  var width = 800,
     height = 500,
     radius = (Math.min(width, height) * 0.8) /2,
     color = d3.scaleOrdinal(d3.schemeCategory20c);
@@ -114,7 +114,7 @@ function drawPieChart(url, category, measure, year) {
     .attr('class', 'center-percentage')
     .attr('y', radius * 0.16)
     .attr('text-anchor', 'middle')
-    .style('fill', '#929292');
+    .style('fill', '#7a7a7a');
 
   resetCenterText();
 

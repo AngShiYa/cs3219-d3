@@ -81,7 +81,7 @@ function drawForceGraph(url) {
     restart();
     
     var svg2 = d3.select("#legendarea").append("svg")
-      .attr("width", 960)
+      .attr("width", width)
       .attr("height", 50);
     
     var numGroups = d3.max(data.nodes.map(function(d) { return d.group; }));
@@ -91,7 +91,7 @@ function drawForceGraph(url) {
       .attr("class", "legend")
       .attr("transform", function(d, i) { return "translate(" +(i * 100) + ", 0)"; });
     
-    var start = Math.max(0, (960 - (100 * numGroups))/2);
+    var start = Math.max(0, (width - (100 * numGroups))/2);
     legend.append("rect")
       .attr("x", start)
       .attr("y", 20)
