@@ -83,6 +83,7 @@ html, body {
 
 .dropdown-container {
   position: relative;
+  width: 80%;
 }
 
 .dropdown {
@@ -90,6 +91,11 @@ html, body {
   top: 33px;
   left: 0;
   z-index: 999;
+  width: 100%;
+}
+
+.dropdown-content {
+  width: 100%;
 }
 
 .dropdown-item {
@@ -99,8 +105,26 @@ html, body {
 .labeltag {
   float: left;
   width: 20%;
-  min-width: 100px;
-  max-width: 150px;
+}
+
+.inputdropdown {
+  width: 100%;
+}
+
+.inputyear {
+  width: 35%;
+}
+
+.inputconnector {
+  width: 10%;
+}
+
+.inputtext {
+  width: 80%;
+}
+
+#submitButton {
+  width: 100%;
 }
 
 .label {
