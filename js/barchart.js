@@ -1,4 +1,9 @@
 function drawBarChart(url, category, measure) {
+  if (count <= 0) {
+    alert("Count must be larger than 0");
+    return;
+  }
+
   category = toFirstLetterUpperCase(category);
   measure = toFirstLetterUpperCase(measure);
     
@@ -118,7 +123,7 @@ function drawBarChart(url, category, measure) {
         .attr("text-anchor", "middle")
         .attr("transform", "translate(" + width/2 + ", " + (0 - (margin.top/2) + 10) + ")")
         .attr("class", "charttitle")
-        .text("Top " + data.length + " " + category + "s by " + measure);
+        .text("Top " + data.length + " " + category + "s by Number of " + measure);
         
     });
   }
