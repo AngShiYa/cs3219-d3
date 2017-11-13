@@ -119,9 +119,6 @@
     <script src="js/vue-userinput.js"></script>
     <script>
       function filterFunction() {
-        var button = document.getElementById("submitButton");
-        button.classList.add("is-loading");
-
         d3.selectAll("svg").remove();
         d3.selectAll("#dataseries > *").remove();
         
@@ -154,8 +151,6 @@
           url = url + "&year=" + startYear + "-" + endYear;
         }
         drawLineChart(url);
-
-        button.classList.remove("is-loading");
       }
 
     </script>
